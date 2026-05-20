@@ -11,8 +11,8 @@ Built for **SWEN 661 — User Interface Implementation** | Team 2 | Spring 2026
 | Name | GitHub |
 |------|--------|
 | Alex Yom | [@alexyommy](https://github.com/alexyommy) |
-| Maurice Hickey | TBD |
-| Gideon Sarpong | TBD |
+| Maurice Hickey | [@moe-hickey](https://github.com/moe-hickey) |
+| Gideon Sarpong | [@gsarpong1](https://github.com/gsarpong1) |
 
 ---
 
