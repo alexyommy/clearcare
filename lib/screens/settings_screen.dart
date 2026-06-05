@@ -1,101 +1,114 @@
 import 'package:flutter/material.dart';
-import '../models/app_state.dart';
-import '../widgets/accessibility_toolbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../state/providers.dart';
 
-class SettingsScreen extends StatelessWidget {
-  final AppState appState;
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
 
-  const SettingsScreen({super.key, required this.appState});
+  static const _primary = Color(0xFF1A5276);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final notifier = ref.read(settingsProvider.notifier);
+    final fs = settings.fontSize;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1A5276),
+        title: Text('Settings',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: fs)),
+        backgroundColor: _primary,
       ),
-      body: ListenableBuilder(
-        listenable: appState,
-        builder: (context, child) => Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(top: 8, bottom: 16),
-                children: [
-                  _SectionHeader(title: 'Accessibility', fontSize: appState.fontSize),
-                  _SettingsTile(
-                    title: 'Font Size',
-                    subtitle: '${appState.fontSize.round()}sp',
-                    fontSize: appState.fontSize,
-                    trailing: SizedBox(
-                      width: 180,
-                      child: Slider(
-                        value: appState.fontSize,
-                        min: 18,
-                        max: 32,
-                        divisions: 7,
-                        activeColor: const Color(0xFF1A5276),
-                        label: '${appState.fontSize.round()}sp',
-                        onChanged: appState.setFontSize,
-                      ),
-                    ),
+      body: ListView(
+        padding: const EdgeInsets.only(top: 8, bottom: 32),
+        children: [
+          // ── Accessibility ─────────────────────────────────────────────────
+          _SectionHeader(title: 'Accessibility', fontSize: fs),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Font Size: ${settings.fontSize.round()}sp',
+                    style: TextStyle(
+                        fontSize: fs,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF0A0A0A))),
+                Semantics(
+                  label:
+                      'Font size slider, current value ${settings.fontSize.round()} sp',
+                  child: Slider(
+                    value: settings.fontSize,
+                    min: 18,
+                    max: 32,
+                    divisions: 7,
+                    activeColor: _primary,
+                    label: '${settings.fontSize.round()}sp',
+                    onChanged: notifier.setFontSize,
                   ),
-                  _SwitchTile(
-                    title: 'High Contrast',
-                    subtitle: 'Increases text and UI contrast',
-                    value: appState.highContrast,
-                    onChanged: (_) => appState.toggleHighContrast(),
-                    fontSize: appState.fontSize,
-                  ),
-                  _SwitchTile(
-                    title: 'Dark Mode',
-                    subtitle: 'Dark background for low-light use',
-                    value: appState.darkMode,
-                    onChanged: (_) => appState.toggleDarkMode(),
-                    fontSize: appState.fontSize,
-                  ),
-                  const Divider(height: 24),
-                  _SectionHeader(title: 'Notifications', fontSize: appState.fontSize),
-                  _SwitchTile(
-                    title: 'Push Notifications',
-                    subtitle: 'Receive task and reminder alerts',
-                    value: appState.pushNotifications,
-                    onChanged: (_) => appState.togglePushNotifications(),
-                    fontSize: appState.fontSize,
-                  ),
-                  _SettingsTile(
-                    title: 'Reminder Time',
-                    subtitle: '15 minutes before task',
-                    fontSize: appState.fontSize,
-                    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                  ),
-                  const Divider(height: 24),
-                  _SectionHeader(title: 'Account', fontSize: appState.fontSize),
-                  _SettingsTile(
-                    title: 'Caregiver Name',
-                    subtitle: 'Alex — Shift A',
-                    fontSize: appState.fontSize,
-                    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                  ),
-                  _SettingsTile(
-                    title: 'Facility',
-                    subtitle: 'Sunrise Care Center',
-                    fontSize: appState.fontSize,
-                    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                  ),
-                  _SettingsTile(
-                    title: 'Sign Out',
-                    subtitle: '',
-                    fontSize: appState.fontSize,
-                    titleColor: const Color(0xFFC0392B),
-                    trailing: const Icon(Icons.logout, color: Color(0xFFC0392B)),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            AccessibilityToolbar(appState: appState),
-          ],
-        ),
+          ),
+          _SwitchTile(
+            icon: Icons.contrast,
+            title: 'High Contrast',
+            subtitle: 'Increases text and UI contrast',
+            value: settings.highContrast,
+            onChanged: (_) => notifier.toggleHighContrast(),
+            fontSize: fs,
+          ),
+          _SwitchTile(
+            icon: Icons.dark_mode_outlined,
+            title: 'Dark Mode',
+            subtitle: 'Dark background for low-light environments',
+            value: settings.darkMode,
+            onChanged: (_) => notifier.toggleDarkMode(),
+            fontSize: fs,
+          ),
+          const Divider(height: 32),
+
+          // ── Notifications ─────────────────────────────────────────────────
+          _SectionHeader(title: 'Notifications', fontSize: fs),
+          _SwitchTile(
+            icon: Icons.notifications_outlined,
+            title: 'Push Notifications',
+            subtitle: 'Receive task and reminder alerts',
+            value: settings.pushNotifications,
+            onChanged: (_) => notifier.togglePushNotifications(),
+            fontSize: fs,
+          ),
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            leading:
+                const Icon(Icons.alarm_outlined, color: _primary, size: 28),
+            title: Text('Reminder Time',
+                style: TextStyle(
+                    fontSize: fs, fontWeight: FontWeight.w600)),
+            subtitle: Text('15 minutes before task',
+                style:
+                    TextStyle(fontSize: fs - 4, color: Colors.grey[600])),
+            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+            onTap: () {},
+          ),
+          const Divider(height: 32),
+
+          // ── About ─────────────────────────────────────────────────────────
+          _SectionHeader(title: 'About', fontSize: fs),
+          _InfoTile(label: 'Version', value: '1.0.0', fontSize: fs),
+          _InfoTile(
+              label: 'Course',
+              value: 'SWEN 661 — UMGC Team 2',
+              fontSize: fs),
+          _InfoTile(
+              label: 'Accessibility',
+              value: 'WCAG 2.1 AA',
+              fontSize: fs),
+        ],
       ),
     );
   }
@@ -104,7 +117,6 @@ class SettingsScreen extends StatelessWidget {
 class _SectionHeader extends StatelessWidget {
   final String title;
   final double fontSize;
-
   const _SectionHeader({required this.title, required this.fontSize});
 
   @override
@@ -114,52 +126,17 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: TextStyle(
-          fontSize: fontSize - 4,
-          fontWeight: FontWeight.w700,
-          color: const Color(0xFF1A5276),
-          letterSpacing: 1.2,
-        ),
+            fontSize: (fontSize - 4).clamp(11, 20),
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF1A5276),
+            letterSpacing: 1.2),
       ),
-    );
-  }
-}
-
-class _SettingsTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final double fontSize;
-  final Widget trailing;
-  final Color? titleColor;
-
-  const _SettingsTile({
-    required this.title,
-    required this.subtitle,
-    required this.fontSize,
-    required this.trailing,
-    this.titleColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w600,
-          color: titleColor ?? const Color(0xFF0A0A0A),
-        ),
-      ),
-      subtitle: subtitle.isNotEmpty
-          ? Text(subtitle, style: TextStyle(fontSize: fontSize - 2, color: Colors.grey[600]))
-          : null,
-      trailing: trailing,
     );
   }
 }
 
 class _SwitchTile extends StatelessWidget {
+  final IconData icon;
   final String title;
   final String subtitle;
   final bool value;
@@ -167,6 +144,7 @@ class _SwitchTile extends StatelessWidget {
   final double fontSize;
 
   const _SwitchTile({
+    required this.icon,
     required this.title,
     required this.subtitle,
     required this.value,
@@ -176,22 +154,49 @@ class _SwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      title: Text(
-        title,
-        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600),
-      ),
-      subtitle: Text(subtitle, style: TextStyle(fontSize: fontSize - 2, color: Colors.grey[600])),
-      trailing: Switch(
+    return Semantics(
+      toggled: value,
+      label: '$title, ${value ? "on" : "off"}',
+      child: SwitchListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        secondary: Icon(icon, color: const Color(0xFF1A5276), size: 28),
+        title: Text(title,
+            style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600)),
+        subtitle: Text(subtitle,
+            style:
+                TextStyle(fontSize: fontSize - 4, color: Colors.grey[600])),
         value: value,
         onChanged: onChanged,
         thumbColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected)
-              ? const Color(0xFF1A5276)
-              : null,
-        ),
+            (s) => s.contains(WidgetState.selected)
+                ? const Color(0xFF1A5276)
+                : null),
       ),
+    );
+  }
+}
+
+class _InfoTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final double fontSize;
+
+  const _InfoTile({
+    required this.label,
+    required this.value,
+    required this.fontSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      title:
+          Text(label, style: TextStyle(fontSize: fontSize - 2, color: Colors.grey[600])),
+      trailing: Text(value,
+          style: TextStyle(fontSize: fontSize - 2, fontWeight: FontWeight.w500)),
     );
   }
 }
