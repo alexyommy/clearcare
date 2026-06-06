@@ -266,18 +266,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     Widget? suffixIcon,
     String? Function(String?)? validator,
   }) {
+    // Login card is always white, so text must always be dark regardless of
+    // the app's dark/light theme mode.
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
       validator: validator,
-      style: const TextStyle(fontSize: 16),
+      style: const TextStyle(fontSize: 16, color: Colors.black87),
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(color: Colors.black54),
         hintText: hint,
+        hintStyle: const TextStyle(color: Colors.black38),
         prefixIcon: Icon(icon, color: Colors.grey[600]),
         suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: Colors.white,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: _primary, width: 2),

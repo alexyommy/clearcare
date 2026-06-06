@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:careconnect_flutter/screens/dashboard_screen.dart';
+import 'package:careconnect_flutter/widgets/task_card.dart';
 import 'package:careconnect_flutter/state/providers.dart';
 import 'package:careconnect_flutter/state/auth_notifier.dart';
 import 'package:careconnect_flutter/state/task_notifier.dart';
@@ -81,8 +82,8 @@ void main() {
 
   testWidgets('task cards render for pending tasks', (tester) async {
     await tester.pumpWidget(_buildDashboard());
-    // Sample data has 6 tasks; dashboard shows up to 3
-    expect(find.byType(Card), findsWidgets);
+    // Sample data has 6 tasks; dashboard shows up to 3 TaskCards
+    expect(find.byType(TaskCard), findsWidgets);
   });
 
   testWidgets('greets caregiver with time-of-day message', (tester) async {

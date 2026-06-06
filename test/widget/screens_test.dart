@@ -18,6 +18,7 @@ import 'package:careconnect_flutter/state/auth_notifier.dart';
 import 'package:careconnect_flutter/state/task_notifier.dart';
 import 'package:careconnect_flutter/services/auth_service.dart';
 import 'package:careconnect_flutter/services/task_service.dart';
+import 'package:careconnect_flutter/widgets/task_card.dart';
 import 'package:careconnect_flutter/models/task_model.dart';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -89,7 +90,7 @@ void main() {
 
     testWidgets('tapping a task card navigates to detail', (tester) async {
       await tester.pumpWidget(_wrap(const TaskListScreen()));
-      await tester.tap(find.byType(Card).first);
+      await tester.tap(find.byType(TaskCard).first);
       await tester.pumpAndSettle();
       // navigated away — no longer on task list
       expect(find.text('Tasks'), findsNothing);
