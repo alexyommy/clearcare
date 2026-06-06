@@ -39,9 +39,73 @@ ClearCare helps professional and family caregivers manage care tasks, patient pr
 
 ---
 
+## App Description
+
+ClearCare is a cross-platform low-vision accessibility companion app designed for caregivers supporting elderly individuals. The app helps caregivers manage care tasks, patient profiles, schedules, medication reminders, care logs, and family communication through an interface designed for low-vision accessibility.
+
+The main UI/UX business need is that some CareConnect/ClearCare caregivers suffer from low vision or partial sight impairment. The app is customized to compensate for low vision by using larger readable text, high-contrast design, clear navigation, simple layouts, large touch targets, and accessibility-friendly screens.
+
+
 ## Setup Instructions
 
-*To be updated as development progresses.*
+### Verify Flutter Installation
+
+```bash
+flutter doctor
+```
+
+### Install Depedencies
+
+```bash
+flutter pub get
+```
+
+### Run the Application
+
+```
+flutter run
+```
+
+### For Android Emulator
+
+``` bash
+flutter run -d emulator-5554
+```
+
+### Run Tests
+
+``` bash
+flutter test
+```
+
+### Generate Coverage Report
+
+```
+flutter test --coverage
+```
+
+## Application Screens
+
+1. Login Screen
+2. Profile Screen
+3. Dashboard Screen
+4. Create Edit Task Screen
+5. Task List Screen
+6. Task Detail Screen
+7. Calendar Screen
+8. Settings Screen
+
+
+## Accessibility Features
+
+- Large readable text
+- High contrast design
+- Large touch targets
+- Simple navigation
+- Clear headings
+- Screen reader support
+- Reduced visual clutter
+- Accessibility settings for low-vision users
 
 ### Prerequisites
 - Flutter SDK
