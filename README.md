@@ -48,13 +48,21 @@ The main UI/UX business need is that some CareConnect/ClearCare caregivers suffe
 
 ## Setup Instructions
 
+
+### Clone the repo
+```bash
+git clone https://github.com/alexyommy/clearcare.git
+cd clearcare
+```
+
+
 ### Verify Flutter Installation
 
 ```bash
 flutter doctor
 ```
 
-### Install Depedencies
+### Install Dependencies
 
 ```bash
 flutter pub get
@@ -66,16 +74,30 @@ flutter pub get
 flutter run
 ```
 
-### For Android Emulator
+## Login Credentials
+
+```text
+Email: jane.smith@careconnect.org
+Password: ***********************
+```
+
+### Check Available Devices
 
 ``` bash
-flutter run -d emulator-5554
+flutter devices
 ```
 
 ### Run Tests
 
 ``` bash
 flutter test
+```
+
+## Generate Coverage HTML Report
+
+``` bash
+flutter test --coverage
+genhtml coverage/lcon.info -o coverage/html
 ```
 
 ### Generate Coverage Report
@@ -86,15 +108,22 @@ flutter test --coverage
 
 ## Application Screens
 
-1. Login Screen
-2. Profile Screen
-3. Dashboard Screen
-4. Create Edit Task Screen
-5. Task List Screen
-6. Task Detail Screen
-7. Calendar Screen
-8. Settings Screen
-
+### 1. Login Screen
+Allows caregivers to securely sign in to the ClearCare application using their email and password credentials.
+### 2. Profile Screen
+Displays caregiver profile information, including personal details, contact information, and account preferences.
+### 3. Dashboard Screen
+Serves as the main navigation hub of the application, providing quick access to task, calendar events, settings, and other caregiver tools.
+### 4. Create/Edit Task Screen
+Allows caregivers to create new care task, update existing tasks, set due dates, assign priorities, and manage task details.
+### 5. Task List Screen
+Displays all caregiver tasks in an organized list, allowing users to quickly view task status, priorities, and due date.
+### 6. Task Detail Screen
+Provides detailed information about a selected task, including descriptions, deadlines, completion status, and additional notes.
+### 7. Calendar Screen
+Displays scheduled appointments, caregiving activities, and important dates in a calendar view to help caregivers manage their schedules.
+### 8. Settings Screen
+Allows users to customize application preferences, manage accessibility options, adjust notification settings, and configure account settings.
 
 ## Accessibility Features
 
@@ -113,8 +142,4 @@ flutter test --coverage
 - Android Studio
 - Xcode (macOS only)
 
-### Clone the repo
-```bash
-git clone https://github.com/alexyommy/clearcare.git
-cd clearcare
-```
+
