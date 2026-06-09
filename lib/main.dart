@@ -33,6 +33,8 @@ class CareConnectApp extends ConsumerWidget {
     final isDark = brightness == Brightness.dark;
     final base = isDark ? ThemeData.dark() : ThemeData.light();
 
+    final textColor = isDark ? Colors.white : const Color(0xFF0A0A0A);
+
     // High-contrast overrides: heavier borders, stronger text weight,
     // slightly larger font bump, and a pure-black/white surface pair.
     final hcCardColor =
@@ -65,21 +67,24 @@ class CareConnectApp extends ConsumerWidget {
         surface: highContrast
             ? hcSurface
             : (isDark ? const Color(0xFF121212) : const Color(0xFFFFFFFF)),
-        onSurface: highContrast ? hcOnSurface : null,
+        onSurface: highContrast ? hcOnSurface : textColor,
         brightness: brightness,
       ),
       textTheme: GoogleFonts.robotoTextTheme(base.textTheme).copyWith(
         bodyMedium: GoogleFonts.roboto(
           fontSize: fontSize,
           fontWeight: highContrast ? FontWeight.w700 : FontWeight.normal,
+          color: textColor,
         ),
         bodyLarge: GoogleFonts.roboto(
           fontSize: fontSize + 2,
           fontWeight: highContrast ? FontWeight.w700 : FontWeight.normal,
+          color: textColor,
         ),
         titleMedium: GoogleFonts.roboto(
           fontSize: fontSize,
           fontWeight: FontWeight.w700,
+          color: textColor,
         ),
       ),
     );

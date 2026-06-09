@@ -127,7 +127,7 @@ class _CreateEditTaskScreenState
               _buildLabel('Task Title *', fs),
               TextFormField(
                 controller: _titleCtrl,
-                style: TextStyle(fontSize: fs),
+                style: TextStyle(fontSize: fs, color: Colors.black),
                 decoration: _inputDecoration('e.g. Administer medication', fs),
                 validator: (v) => (v == null || v.trim().isEmpty)
                     ? 'Title is required'
@@ -140,7 +140,7 @@ class _CreateEditTaskScreenState
               _buildLabel('Scheduled Time *', fs),
               TextFormField(
                 controller: _timeCtrl,
-                style: TextStyle(fontSize: fs),
+                style: TextStyle(fontSize: fs, color: Colors.black),
                 decoration: _inputDecoration('e.g. 8:00 AM', fs),
                 validator: (v) => (v == null || v.trim().isEmpty)
                     ? 'Time is required'
@@ -152,7 +152,7 @@ class _CreateEditTaskScreenState
               _buildLabel('Location / Patient *', fs),
               TextFormField(
                 controller: _roomCtrl,
-                style: TextStyle(fontSize: fs),
+                style: TextStyle(fontSize: fs, color: Colors.black),
                 decoration: _inputDecoration('e.g. Room 204 or Mary Johnson', fs),
                 validator: (v) => (v == null || v.trim().isEmpty)
                     ? 'Location is required'
@@ -176,7 +176,7 @@ class _CreateEditTaskScreenState
               _buildLabel('Category', fs),
               DropdownButtonFormField<TaskCategory>(
                 initialValue: _category,
-                style: TextStyle(fontSize: fs, color: const Color(0xFF0A0A0A)),
+                style: TextStyle(fontSize: fs, color: Colors.black),
                 decoration: _inputDecoration('', fs),
                 items: TaskCategory.values
                     .map((c) => DropdownMenuItem(
@@ -194,7 +194,7 @@ class _CreateEditTaskScreenState
               _buildLabel('Notes (optional)', fs),
               TextFormField(
                 controller: _notesCtrl,
-                style: TextStyle(fontSize: fs),
+                style: TextStyle(fontSize: fs, color: Colors.black),
                 decoration: _inputDecoration('Any additional instructions…', fs),
                 maxLines: 3,
                 textCapitalization: TextCapitalization.sentences,

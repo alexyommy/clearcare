@@ -72,6 +72,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _EditNameField(
                     controller: _nameCtrl,
                     fontSize: fs,
+                    color: Colors.black,
                     onSave: () => setState(() => _editingName = false),
                     onCancel: () => setState(() => _editingName = false),
                   )
@@ -82,7 +83,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       Text(
                         user?.name ?? 'Caregiver',
                         style: TextStyle(
-                            fontSize: fs + 4, fontWeight: FontWeight.bold),
+                            fontSize: fs + 4, color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -205,12 +206,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 class _EditNameField extends StatelessWidget {
   final TextEditingController controller;
   final double fontSize;
+  final Color color;
   final VoidCallback onSave;
   final VoidCallback onCancel;
 
   const _EditNameField({
     required this.controller,
     required this.fontSize,
+    required this.color,
     required this.onSave,
     required this.onCancel,
   });
@@ -224,7 +227,7 @@ class _EditNameField extends StatelessWidget {
           width: 180,
           child: TextField(
             controller: controller,
-            style: TextStyle(fontSize: fontSize),
+            style: TextStyle(fontSize: fontSize, color: color),
             decoration: const InputDecoration(
               isDense: true,
               border: OutlineInputBorder(),

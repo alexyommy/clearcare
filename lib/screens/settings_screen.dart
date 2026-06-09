@@ -35,8 +35,7 @@ class SettingsScreen extends ConsumerWidget {
                 Text('Font Size: ${settings.fontSize.round()}sp',
                     style: TextStyle(
                         fontSize: fs,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF0A0A0A))),
+                        fontWeight: FontWeight.w600)),
                 Semantics(
                   label:
                       'Font size slider, current value ${settings.fontSize.round()} sp',
