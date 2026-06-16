@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "CareConnect",
+    "slug": "careconnect-rn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A5276"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "edu.umgc.swen661.careconnect"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1A5276"
+      },
+      "package": "edu.umgc.swen661.careconnect"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
