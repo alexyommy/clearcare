@@ -133,26 +133,42 @@ open coverage/html/index.html
 
 ## Application Screens
 
-### 1. Login Screen
+![Login Screen](Login.png)
+
+### Login Screen
 Allows caregivers to securely sign in or register a new account using their email and password credentials. Includes inline validation and a demo account for quick access.
+
+![Dashboard Screen](Dashboard.png)
 
 ### 2. Dashboard Screen
 Serves as the main hub of the application, showing a greeting, today's task summary with stat cards (pending/completed/total), a preview of upcoming tasks, and quick-access links to Calendar and Profile.
 
+![Task List Screen](Task-list.png)
+
 ### 3. Task List Screen
 Displays all caregiver tasks organized into Pending and Completed sections. Supports swipe-to-complete gestures with an undo option, and a floating action button to add new tasks.
+
+![Task Detail Screen](Task-detail.png)
 
 ### 4. Task Detail Screen
 Provides full details of a selected task including title, scheduled time, location/patient, category, priority, and any notes. Supports marking complete/incomplete, editing, and deletion with a confirmation dialog.
 
+![Create/Edit Task Screen](Create%20new%20task.png)
+
 ### 5. Create/Edit Task Screen
 A form screen used for both creating new tasks and editing existing ones. Includes fields for title, time, location, priority (Low/Medium/High), category dropdown, and optional notes — all with inline validation.
+
+![Calendar Screen](Calendar.png)
 
 ### 6. Calendar Screen
 Displays a monthly calendar grid with event dot indicators, plus a scrollable list of upcoming caregiver events with color-coded categories.
 
+![Profile Screen](Profile.png)
+
 ### 7. Profile Screen
 Shows the logged-in caregiver's name, email, role badge, and task completion stats. Supports inline name editing and includes a Sign Out button.
+
+![Settings Screen](Settings.png)
 
 ### 8. Settings Screen
 Allows caregivers to customize the app: font size slider (18–32sp), high contrast toggle, dark mode toggle, push notification toggle, and reminder time preference. Also shows app version and course info.
