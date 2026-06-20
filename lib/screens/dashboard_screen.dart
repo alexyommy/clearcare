@@ -39,13 +39,16 @@ class DashboardScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Greeting
-          Text(
-            'Good ${_greeting()}, ${user?.name.split(' ').first ?? 'Caregiver'}',
-            style: TextStyle(
-                fontSize: fs + 4,
-                fontWeight: FontWeight.bold,
-                color: _primary),
+          // Greeting — marked as a heading for screen readers
+          Semantics(
+            header: true,
+            child: Text(
+              'Good ${_greeting()}, ${user?.name.split(' ').first ?? 'Caregiver'}',
+              style: TextStyle(
+                  fontSize: fs + 4,
+                  fontWeight: FontWeight.bold,
+                  color: _primary),
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -101,10 +104,13 @@ class DashboardScreen extends ConsumerWidget {
                     fontWeight: FontWeight.w700,
                     color: _primary),
               ),
-              TextButton(
-                onPressed: () => context.go('/tasks'),
-                child: Text('View all',
-                    style: TextStyle(color: _primary, fontSize: fs - 2)),
+              Semantics(
+                label: 'View all tasks',
+                child: TextButton(
+                  onPressed: () => context.go('/tasks'),
+                  child: Text('View all',
+                      style: TextStyle(color: _primary, fontSize: fs - 2)),
+                ),
               ),
             ],
           ),
@@ -216,26 +222,30 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 26),
-          const SizedBox(height: 6),
-          Text(value,
-              style: TextStyle(
-                  fontSize: fontSize + 4,
-                  fontWeight: FontWeight.bold,
-                  color: color)),
-          Text(label,
-              style:
-                  TextStyle(fontSize: fontSize - 4, color: Colors.grey[700])),
-        ],
+    return Semantics(
+      label: '$label: $value tasks',
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 26),
+            const SizedBox(height: 6),
+            Text(value,
+                style: TextStyle(
+                    fontSize: fontSize + 4,
+                    fontWeight: FontWeight.bold,
+                    color: color)),
+            Text(label,
+                style:
+                    TextStyle(fontSize: fontSize - 4, color: Colors.grey[700])),
+          ],
+        ),
       ),
     );
   }

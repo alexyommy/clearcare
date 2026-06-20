@@ -27,12 +27,15 @@ class CalendarScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              'Upcoming Events',
-              style: TextStyle(
-                  fontSize: fs + 2,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A5276)),
+            child: Semantics(
+              header: true,
+              child: Text(
+                'Upcoming Events',
+                style: TextStyle(
+                    fontSize: fs + 2,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A5276)),
+              ),
             ),
           ),
           ..._sampleEvents.map((e) => _EventTile(event: e, fontSize: fs)),
@@ -151,7 +154,10 @@ class _CalendarGrid extends StatelessWidget {
                 final day = index - startOffset + 1;
                 final isToday = day == 2;
                 final hasEvent = [2, 3, 4, 9, 16].contains(day);
-                return Column(
+                return Semantics(
+                  label: 'June $day${isToday ? ', today' : ''}${hasEvent ? ', has events' : ''}',
+                  button: false,
+                  child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
@@ -178,14 +184,17 @@ class _CalendarGrid extends StatelessWidget {
                       ),
                     ),
                     if (hasEvent)
-                      Container(
-                        width: 5,
-                        height: 5,
-                        decoration: const BoxDecoration(
-                            color: Color(0xFF1E8449),
-                            shape: BoxShape.circle),
+                      ExcludeSemantics(
+                        child: Container(
+                          width: 5,
+                          height: 5,
+                          decoration: const BoxDecoration(
+                              color: Color(0xFF1E8449),
+                              shape: BoxShape.circle),
+                        ),
                       ),
                   ],
+                  ),
                 );
               },
             ),
@@ -214,28 +223,34 @@ class _EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-              color: _dotColor, shape: BoxShape.circle),
+    return Semantics(
+      label: '${event['title']}, ${event['date']}, ${event['time']}',
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 8),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          leading: ExcludeSemantics(
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                  color: _dotColor, shape: BoxShape.circle),
+            ),
+          ),
+          title: Text(event['title']!,
+              style: TextStyle(
+                  fontSize: fontSize, fontWeight: FontWeight.w600)),
+          subtitle: Text(
+              '${event['date']}  •  ${event['time']}',
+              style:
+                  TextStyle(fontSize: fontSize - 2, color: Colors.grey[600])),
+          trailing: ExcludeSemantics(
+            child: const Icon(Icons.chevron_right, color: Colors.grey),
+          ),
         ),
-        title: Text(event['title']!,
-            style: TextStyle(
-                fontSize: fontSize, fontWeight: FontWeight.w600)),
-        subtitle: Text(
-            '${event['date']}  •  ${event['time']}',
-            style:
-                TextStyle(fontSize: fontSize - 2, color: Colors.grey[600])),
-        trailing:
-            const Icon(Icons.chevron_right, color: Colors.grey),
       ),
     );
   }

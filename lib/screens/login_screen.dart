@@ -56,24 +56,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Logo
-                Container(
-                  width: 72,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    color: _primary,
-                    borderRadius: BorderRadius.circular(20),
+                // Logo — decorative, excluded from screen reader tree
+                ExcludeSemantics(
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: _primary,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(Icons.favorite,
+                        color: Colors.white, size: 36),
                   ),
-                  child: const Icon(Icons.favorite,
-                      color: Colors.white, size: 36),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'CareConnect',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: _primary,
-                      ),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'CareConnect',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: _primary,
+                        ),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(

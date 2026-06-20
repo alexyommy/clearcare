@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../state/providers.dart';
@@ -44,7 +45,14 @@ class TaskListScreen extends ConsumerWidget {
                 if (pending.isNotEmpty) ...[
                   _SectionLabel(
                       label: 'Pending (${pending.length})', fontSize: fs),
-                  ...pending.map((task) => Dismissible(
+                  ...pending.map((task) => Semantics(
+                        customSemanticsActions: {
+                          CustomSemanticsAction(label: 'Mark complete'):
+                              () => ref
+                                  .read(taskProvider.notifier)
+                                  .markComplete(task.id),
+                        },
+                        child: Dismissible(
                         key: Key('task_${task.id}'),
                         direction: DismissDirection.endToStart,
                         background: _SwipeBackground(),
@@ -73,7 +81,7 @@ class TaskListScreen extends ConsumerWidget {
                           fontSize: fs,
                           onTap: () => context.go('/tasks/${task.id}'),
                         ),
-                      )),
+                      ))),
                 ],
                 if (completed.isNotEmpty) ...[
                   const SizedBox(height: 8),
@@ -106,15 +114,18 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: Text(
-        label,
-        style: TextStyle(
-            fontSize: fontSize - 2,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF1A5276),
-            letterSpacing: 0.5),
+    return Semantics(
+      header: true,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        child: Text(
+          label,
+          style: TextStyle(
+              fontSize: fontSize - 2,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A5276),
+              letterSpacing: 0.5),
+        ),
       ),
     );
   }
@@ -123,21 +134,26 @@ class _SectionLabel extends StatelessWidget {
 class _SwipeBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      padding: const EdgeInsets.only(right: 24),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E8449),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.check, color: Colors.white, size: 28),
-          SizedBox(height: 4),
-          Text('Complete', style: TextStyle(color: Colors.white, fontSize: 12)),
-        ],
+    // Decorative affordance — exclude from semantics; swipe action is
+    // surfaced via CustomSemanticsAction on the parent Semantics widget.
+    return ExcludeSemantics(
+      child: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 24),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E8449),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check, color: Colors.white, size: 28),
+            SizedBox(height: 4),
+            Text('Complete',
+                style: TextStyle(color: Colors.white, fontSize: 12)),
+          ],
+        ),
       ),
     );
   }
