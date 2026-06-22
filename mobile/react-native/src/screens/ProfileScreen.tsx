@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,13 @@ import {
   Alert,
 } from 'react-native';
 import { useAuth, useTasks } from '../hooks/useStore';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius, Shadows } from '../utils/theme';
+import { useAppTheme } from '../hooks/useTheme';
+import { TouchTarget } from '../utils/theme';
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
   const { tasks } = useTasks();
+  const { colors, fontSizes, spacing, borderRadius, shadows } = useAppTheme();
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState(user?.name ?? '');
 
@@ -37,10 +39,98 @@ export default function ProfileScreen() {
   };
 
   const stats = [
-    { label: 'Completed', value: completedCount, color: Colors.success },
-    { label: 'Pending', value: pendingCount, color: Colors.warning },
-    { label: 'Total', value: totalCount, color: Colors.primary },
+    { label: 'Completed', value: completedCount, color: colors.success },
+    { label: 'Pending', value: pendingCount, color: colors.warning },
+    { label: 'Total', value: totalCount, color: colors.primary },
   ];
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
+    avatarSection: { alignItems: 'center', gap: spacing.sm },
+    avatarCircle: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatarText: { fontSize: fontSizes.xxxl, fontWeight: '800', color: colors.white },
+    nameRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+    name: { fontSize: fontSizes.xxl, fontWeight: '800', color: colors.text },
+    editBtn: { minWidth: TouchTarget.minSize, alignItems: 'center' },
+    editBtnText: { fontSize: 22 },
+    nameEditRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'center' },
+    nameInput: {
+      backgroundColor: colors.cardBg,
+      borderWidth: 1.5,
+      borderColor: colors.primary,
+      borderRadius: borderRadius.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      fontSize: fontSizes.lg,
+      color: colors.text,
+      minHeight: TouchTarget.minSize,
+      minWidth: 160,
+    },
+    saveBtn: {
+      backgroundColor: colors.primary,
+      borderRadius: borderRadius.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      minHeight: TouchTarget.minSize,
+      justifyContent: 'center',
+    },
+    saveBtnText: { color: colors.isDark ? colors.black : colors.white, fontWeight: '700', fontSize: fontSizes.md },
+    email: { fontSize: fontSizes.md, color: colors.textMuted },
+    roleBadge: {
+      backgroundColor: colors.primaryLight,
+      borderRadius: borderRadius.full,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+    },
+    roleBadgeText: { color: colors.white, fontSize: fontSizes.sm, fontWeight: '700' },
+    sectionTitle: { fontSize: fontSizes.md, fontWeight: '700', color: colors.textMuted, letterSpacing: 1 },
+    statsRow: { flexDirection: 'row', gap: spacing.sm },
+    statCard: {
+      flex: 1,
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      alignItems: 'center',
+      borderTopWidth: 4,
+      ...shadows.card,
+    },
+    statValue: { fontSize: fontSizes.xxl, fontWeight: '800' },
+    statLabel: { fontSize: fontSizes.sm, color: colors.textMuted, marginTop: spacing.xs },
+    accountCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      overflow: 'hidden',
+      ...shadows.card,
+    },
+    accountRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+    },
+    accountLabel: { fontSize: fontSizes.md, color: colors.textMuted, fontWeight: '600' },
+    accountValue: { fontSize: fontSizes.md, color: colors.text },
+    signOutBtn: {
+      backgroundColor: colors.error,
+      borderRadius: borderRadius.md,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: spacing.md,
+    },
+    signOutText: { color: colors.white, fontSize: fontSizes.lg, fontWeight: '700' },
+  }), [colors, fontSizes, spacing, borderRadius, shadows]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -86,7 +176,7 @@ export default function ProfileScreen() {
 
           <Text style={styles.email}>{user?.email}</Text>
 
-          <View style={styles.roleBadge}>
+          <View style={styles.roleBadge} accessibilityLabel={`Role: ${user?.role === 'patient' ? 'Patient' : 'Caregiver'}`}>
             <Text style={styles.roleBadgeText}>
               {user?.role === 'patient' ? '🏥 Patient' : '🩺 Caregiver'}
             </Text>
@@ -107,11 +197,11 @@ export default function ProfileScreen() {
         {/* Account section */}
         <Text style={styles.sectionTitle}>ACCOUNT</Text>
         <View style={styles.accountCard}>
-          <View style={styles.accountRow}>
+          <View style={styles.accountRow} accessibilityLabel={`Email: ${user?.email}`}>
             <Text style={styles.accountLabel}>Email</Text>
             <Text style={styles.accountValue}>{user?.email}</Text>
           </View>
-          <View style={[styles.accountRow, { borderBottomWidth: 0 }]}>
+          <View style={[styles.accountRow, { borderBottomWidth: 0 }]} accessibilityLabel={`Role: ${user?.role === 'patient' ? 'Patient' : 'Caregiver'}`}>
             <Text style={styles.accountLabel}>Role</Text>
             <Text style={styles.accountValue}>{user?.role === 'patient' ? 'Patient' : 'Caregiver'}</Text>
           </View>
@@ -132,90 +222,3 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  scroll: { padding: Spacing.lg, gap: Spacing.lg, paddingBottom: Spacing.xxl },
-  avatarSection: { alignItems: 'center', gap: Spacing.sm },
-  avatarCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: { fontSize: FontSizes.xxxl, fontWeight: '800', color: Colors.white },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  name: { fontSize: FontSizes.xxl, fontWeight: '800', color: Colors.grey900 },
-  editBtn: { minWidth: TouchTarget.minSize, alignItems: 'center' },
-  editBtnText: { fontSize: 22 },
-  nameEditRow: { flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' },
-  nameInput: {
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    fontSize: FontSizes.lg,
-    color: Colors.grey900,
-    minHeight: TouchTarget.minSize,
-    minWidth: 160,
-  },
-  saveBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    minHeight: TouchTarget.minSize,
-    justifyContent: 'center',
-  },
-  saveBtnText: { color: Colors.white, fontWeight: '700', fontSize: FontSizes.md },
-  email: { fontSize: FontSizes.md, color: Colors.grey600 },
-  roleBadge: {
-    backgroundColor: Colors.primaryLight,
-    borderRadius: BorderRadius.full,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-  },
-  roleBadgeText: { color: Colors.white, fontSize: FontSizes.sm, fontWeight: '700' },
-  sectionTitle: { fontSize: FontSizes.md, fontWeight: '700', color: Colors.grey600, letterSpacing: 1 },
-  statsRow: { flexDirection: 'row', gap: Spacing.sm },
-  statCard: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    alignItems: 'center',
-    borderTopWidth: 4,
-    ...Shadows.card,
-  },
-  statValue: { fontSize: FontSizes.xxl, fontWeight: '800' },
-  statLabel: { fontSize: FontSizes.sm, color: Colors.grey600, marginTop: Spacing.xs },
-  accountCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-    ...Shadows.card,
-  },
-  accountRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.grey100,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-  },
-  accountLabel: { fontSize: FontSizes.md, color: Colors.grey600, fontWeight: '600' },
-  accountValue: { fontSize: FontSizes.md, color: Colors.grey900 },
-  signOutBtn: {
-    backgroundColor: Colors.error,
-    borderRadius: BorderRadius.md,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacing.md,
-  },
-  signOutText: { color: Colors.white, fontSize: FontSizes.lg, fontWeight: '700' },
-});

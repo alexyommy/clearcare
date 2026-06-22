@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -9,23 +9,89 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth, useTasks } from '../hooks/useStore';
+import { useAppTheme } from '../hooks/useTheme';
 import { getGreeting, formatTime, getCategoryColor } from '../utils/helpers';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius, Shadows } from '../utils/theme';
+import { TouchTarget } from '../utils/theme';
 import { CareTask } from '../types';
 
 export default function DashboardScreen() {
   const navigation = useNavigation<any>();
   const { user } = useAuth();
   const { tasks, pendingTasks, completedTasks } = useTasks();
+  const { colors, fontSizes, spacing, borderRadius, shadows } = useAppTheme();
 
   const greeting = getGreeting(user?.name?.split(' ')[0] ?? 'Caregiver');
   const previewTasks = pendingTasks.slice(0, 3);
 
   const stats = [
-    { label: 'Pending', value: pendingTasks.length, color: Colors.warning },
-    { label: 'Completed', value: completedTasks.length, color: Colors.success },
-    { label: 'Total', value: tasks.length, color: Colors.primary },
+    { label: 'Pending', value: pendingTasks.length, color: colors.warning },
+    { label: 'Completed', value: completedTasks.length, color: colors.success },
+    { label: 'Total', value: tasks.length, color: colors.primary },
   ];
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
+    header: {
+      backgroundColor: colors.primary,
+      borderRadius: borderRadius.lg,
+      padding: spacing.lg,
+    },
+    greeting: { fontSize: fontSizes.xxl, fontWeight: '800', color: colors.white },
+    date: { fontSize: fontSizes.sm, color: 'rgba(255,255,255,0.8)', marginTop: spacing.xs },
+    statsRow: { flexDirection: 'row', gap: spacing.sm },
+    statCard: {
+      flex: 1,
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      alignItems: 'center',
+      borderTopWidth: 4,
+      ...shadows.card,
+    },
+    statValue: { fontSize: fontSizes.xxxl, fontWeight: '800' },
+    statLabel: { fontSize: fontSizes.sm, color: colors.textMuted, marginTop: spacing.xs },
+    section: { gap: spacing.sm },
+    sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    sectionTitle: { fontSize: fontSizes.lg, fontWeight: '700', color: colors.text },
+    viewAll: { minHeight: TouchTarget.minSize, justifyContent: 'center' },
+    viewAllText: { color: colors.primary, fontSize: fontSizes.md, fontWeight: '600' },
+    emptyCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.xl,
+      alignItems: 'center',
+    },
+    emptyText: { fontSize: fontSizes.md, color: colors.textMuted },
+    taskCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      minHeight: TouchTarget.minSize,
+      ...shadows.card,
+    },
+    taskDot: { width: 12, height: 12, borderRadius: 6 },
+    taskInfo: { flex: 1 },
+    taskTitle: { fontSize: fontSizes.md, fontWeight: '600', color: colors.text },
+    taskMeta: { fontSize: fontSizes.sm, color: colors.textMuted, marginTop: 2 },
+    quickRow: { flexDirection: 'row', gap: spacing.sm },
+    quickCard: {
+      flex: 1,
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      alignItems: 'center',
+      minHeight: TouchTarget.minSize,
+      justifyContent: 'center',
+      gap: spacing.xs,
+      ...shadows.card,
+    },
+    quickEmoji: { fontSize: 28 },
+    quickLabel: { fontSize: fontSizes.sm, color: colors.text, fontWeight: '600' },
+  }), [colors, fontSizes, spacing, borderRadius, shadows]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -66,7 +132,7 @@ export default function DashboardScreen() {
             </View>
           ) : (
             previewTasks.map((task) => (
-              <TaskPreviewCard key={task.id} task={task} onPress={() => navigation.navigate('TaskDetail', { taskId: task.id })} />
+              <TaskPreviewCard key={task.id} task={task} onPress={() => navigation.navigate('TaskDetail', { taskId: task.id })} styles={styles} />
             ))
           )}
         </View>
@@ -99,7 +165,7 @@ export default function DashboardScreen() {
   );
 }
 
-function TaskPreviewCard({ task, onPress }: { task: CareTask; onPress: () => void }) {
+function TaskPreviewCard({ task, onPress, styles }: { task: CareTask; onPress: () => void; styles: any }) {
   return (
     <TouchableOpacity
       style={styles.taskCard}
@@ -117,66 +183,3 @@ function TaskPreviewCard({ task, onPress }: { task: CareTask; onPress: () => voi
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  scroll: { padding: Spacing.lg, gap: Spacing.lg, paddingBottom: Spacing.xxl },
-  header: {
-    backgroundColor: Colors.primary,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.lg,
-  },
-  greeting: { fontSize: FontSizes.xxl, fontWeight: '800', color: Colors.white },
-  date: { fontSize: FontSizes.sm, color: 'rgba(255,255,255,0.8)', marginTop: Spacing.xs },
-  statsRow: { flexDirection: 'row', gap: Spacing.sm },
-  statCard: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    alignItems: 'center',
-    borderTopWidth: 4,
-    ...Shadows.card,
-  },
-  statValue: { fontSize: FontSizes.xxxl, fontWeight: '800' },
-  statLabel: { fontSize: FontSizes.sm, color: Colors.grey600, marginTop: Spacing.xs },
-  section: { gap: Spacing.sm },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  sectionTitle: { fontSize: FontSizes.lg, fontWeight: '700', color: Colors.grey900 },
-  viewAll: { minHeight: TouchTarget.minSize, justifyContent: 'center' },
-  viewAllText: { color: Colors.primary, fontSize: FontSizes.md, fontWeight: '600' },
-  emptyCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.xl,
-    alignItems: 'center',
-  },
-  emptyText: { fontSize: FontSizes.md, color: Colors.grey600 },
-  taskCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    minHeight: TouchTarget.minSize,
-    ...Shadows.card,
-  },
-  taskDot: { width: 12, height: 12, borderRadius: 6 },
-  taskInfo: { flex: 1 },
-  taskTitle: { fontSize: FontSizes.md, fontWeight: '600', color: Colors.grey900 },
-  taskMeta: { fontSize: FontSizes.sm, color: Colors.grey600, marginTop: 2 },
-  quickRow: { flexDirection: 'row', gap: Spacing.sm },
-  quickCard: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    alignItems: 'center',
-    minHeight: TouchTarget.minSize,
-    justifyContent: 'center',
-    gap: Spacing.xs,
-    ...Shadows.card,
-  },
-  quickEmoji: { fontSize: 28 },
-  quickLabel: { fontSize: FontSizes.sm, color: Colors.grey800, fontWeight: '600' },
-});

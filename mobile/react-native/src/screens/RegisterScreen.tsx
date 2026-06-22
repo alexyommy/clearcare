@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,14 +15,16 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../types';
 import { useAuth } from '../hooks/useStore';
+import { useAppTheme } from '../hooks/useTheme';
 import { validateEmail, validatePassword } from '../utils/helpers';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius } from '../utils/theme';
+import { TouchTarget } from '../utils/theme';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
 export default function RegisterScreen() {
   const navigation = useNavigation<Nav>();
   const { signUp, isLoading, error, clearAuthError } = useAuth();
+  const { colors, fontSizes, spacing, borderRadius } = useAppTheme();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -53,6 +55,51 @@ export default function RegisterScreen() {
     if (!validate()) return;
     await signUp(name, email, password);
   };
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { flexGrow: 1, padding: spacing.lg, gap: spacing.lg },
+    header: { alignItems: 'center', paddingVertical: spacing.lg },
+    title: { fontSize: fontSizes.xxxl, fontWeight: '800', color: colors.text },
+    subtitle: { fontSize: fontSizes.md, color: colors.textMuted, marginTop: spacing.xs },
+    errorBanner: {
+      backgroundColor: '#FDEDED',
+      borderLeftWidth: 4,
+      borderLeftColor: colors.error,
+      borderRadius: borderRadius.sm,
+      padding: spacing.md,
+    },
+    errorBannerText: { color: colors.error, fontSize: fontSizes.md, fontWeight: '600' },
+    form: { gap: spacing.md },
+    fieldGroup: { gap: spacing.xs },
+    label: { fontSize: fontSizes.md, fontWeight: '600', color: colors.text },
+    input: {
+      backgroundColor: colors.white,
+      borderWidth: 1.5,
+      borderColor: colors.grey300,
+      borderRadius: borderRadius.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      fontSize: fontSizes.md,
+      color: colors.black,
+      minHeight: TouchTarget.minSize,
+    },
+    inputError: { borderColor: colors.error },
+    fieldError: { color: colors.error, fontSize: fontSizes.sm },
+    registerBtn: {
+      backgroundColor: colors.secondary,
+      borderRadius: borderRadius.md,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: spacing.sm,
+    },
+    btnDisabled: { opacity: 0.6 },
+    registerBtnText: { color: colors.white, fontSize: fontSizes.lg, fontWeight: '700' },
+    footer: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.md },
+    footerText: { color: colors.textMuted, fontSize: fontSizes.md },
+    footerLink: { color: colors.primary, fontSize: fontSizes.md, fontWeight: '700' },
+  }), [colors, fontSizes, spacing, borderRadius]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -90,7 +137,7 @@ export default function RegisterScreen() {
                   value={value}
                   onChangeText={setter}
                   placeholder={placeholder}
-                  placeholderTextColor={Colors.grey400}
+                  placeholderTextColor={colors.grey400}
                   keyboardType={keyboard}
                   autoCapitalize={keyboard === 'email-address' || secure ? 'none' : 'words'}
                   secureTextEntry={secure}
@@ -110,7 +157,7 @@ export default function RegisterScreen() {
               activeOpacity={0.85}
             >
               {isLoading ? (
-                <ActivityIndicator color={Colors.white} />
+                <ActivityIndicator color={colors.white} />
               ) : (
                 <Text style={styles.registerBtnText}>Create Account</Text>
               )}
@@ -119,7 +166,11 @@ export default function RegisterScreen() {
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')} accessibilityRole="link">
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Login')}
+              accessibilityRole="link"
+              accessibilityLabel="Sign in"
+            >
               <Text style={styles.footerLink}>Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -129,47 +180,3 @@ export default function RegisterScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  scroll: { flexGrow: 1, padding: Spacing.lg, gap: Spacing.lg },
-  header: { alignItems: 'center', paddingVertical: Spacing.lg },
-  title: { fontSize: FontSizes.xxxl, fontWeight: '800', color: Colors.grey900 },
-  subtitle: { fontSize: FontSizes.md, color: Colors.grey600, marginTop: Spacing.xs },
-  errorBanner: {
-    backgroundColor: '#FDEDED',
-    borderLeftWidth: 4,
-    borderLeftColor: Colors.error,
-    borderRadius: BorderRadius.sm,
-    padding: Spacing.md,
-  },
-  errorBannerText: { color: Colors.error, fontSize: FontSizes.md, fontWeight: '600' },
-  form: { gap: Spacing.md },
-  fieldGroup: { gap: Spacing.xs },
-  label: { fontSize: FontSizes.md, fontWeight: '600', color: Colors.grey800 },
-  input: {
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.grey300,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.md,
-    fontSize: FontSizes.md,
-    color: Colors.grey900,
-    minHeight: TouchTarget.minSize,
-  },
-  inputError: { borderColor: Colors.error },
-  fieldError: { color: Colors.error, fontSize: FontSizes.sm },
-  registerBtn: {
-    backgroundColor: Colors.secondary,
-    borderRadius: BorderRadius.md,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacing.sm,
-  },
-  btnDisabled: { opacity: 0.6 },
-  registerBtnText: { color: Colors.white, fontSize: FontSizes.lg, fontWeight: '700' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.md },
-  footerText: { color: Colors.grey600, fontSize: FontSizes.md },
-  footerLink: { color: Colors.primary, fontSize: FontSizes.md, fontWeight: '700' },
-});

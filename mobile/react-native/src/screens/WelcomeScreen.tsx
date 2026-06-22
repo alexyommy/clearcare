@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,16 +10,60 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../types';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius } from '../utils/theme';
+import { useAppTheme } from '../hooks/useTheme';
+import { TouchTarget } from '../utils/theme';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
 export default function WelcomeScreen() {
   const navigation = useNavigation<Nav>();
+  const { colors, fontSizes, spacing, borderRadius, isDark } = useAppTheme();
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: isDark ? colors.background : colors.primary },
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.xxl,
+    },
+    logoContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md },
+    logoCircle: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: colors.white,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoText: { fontSize: 36, fontWeight: '800', color: colors.primary },
+    appName: { fontSize: fontSizes.display, fontWeight: '800', color: colors.white },
+    tagline: { fontSize: fontSizes.md, color: 'rgba(255,255,255,0.85)', textAlign: 'center', lineHeight: 26 },
+    actions: { width: '100%', gap: spacing.md },
+    primaryBtn: {
+      backgroundColor: colors.white,
+      borderRadius: borderRadius.md,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    primaryBtnText: { color: colors.primary, fontSize: fontSizes.lg, fontWeight: '700' },
+    secondaryBtn: {
+      borderWidth: 2,
+      borderColor: colors.white,
+      borderRadius: borderRadius.md,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    secondaryBtnText: { color: colors.white, fontSize: fontSizes.lg, fontWeight: '600' },
+    footer: { color: 'rgba(255,255,255,0.6)', fontSize: fontSizes.xs, textAlign: 'center' },
+  }), [colors, fontSizes, spacing, borderRadius, isDark]);
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
       <View style={styles.container}>
         {/* Logo area */}
         <View style={styles.logoContainer}>
@@ -61,44 +105,3 @@ export default function WelcomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.primary },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.xl,
-    paddingVertical: Spacing.xxl,
-  },
-  logoContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: Spacing.md },
-  logoCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoText: { fontSize: 36, fontWeight: '800', color: Colors.primary },
-  appName: { fontSize: FontSizes.display, fontWeight: '800', color: Colors.white },
-  tagline: { fontSize: FontSizes.md, color: 'rgba(255,255,255,0.85)', textAlign: 'center', lineHeight: 26 },
-  actions: { width: '100%', gap: Spacing.md },
-  primaryBtn: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryBtnText: { color: Colors.primary, fontSize: FontSizes.lg, fontWeight: '700' },
-  secondaryBtn: {
-    borderWidth: 2,
-    borderColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  secondaryBtnText: { color: Colors.white, fontSize: FontSizes.lg, fontWeight: '600' },
-  footer: { color: 'rgba(255,255,255,0.6)', fontSize: FontSizes.xs, textAlign: 'center' },
-});

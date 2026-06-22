@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,92 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useAuth, useTasks, usePatients } from '../hooks/useStore';
+import { useAppTheme } from '../hooks/useTheme';
 import { getGreeting, formatTime, getCategoryColor, getCategoryLabel } from '../utils/helpers';
-import { Colors, FontSizes, Spacing, BorderRadius, Shadows, TouchTarget } from '../utils/theme';
+import { TouchTarget } from '../utils/theme';
 import { CareTask } from '../types';
 
 export default function PatientDashboardScreen() {
   const { user } = useAuth();
   const { tasks } = useTasks();
   const { patients } = usePatients();
+  const { colors, fontSizes, spacing, borderRadius, shadows } = useAppTheme();
 
   const greeting = getGreeting(user?.name?.split(' ')[0] ?? 'there');
 
   // In a real app, filter by patientId — for demo show all pending as "my schedule"
   const myTasks = tasks.filter((t) => !t.isCompleted).slice(0, 8);
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing.xxl },
+    hero: {
+      backgroundColor: colors.secondary,
+      borderRadius: borderRadius.lg,
+      padding: spacing.lg,
+      gap: spacing.xs,
+    },
+    greeting: { fontSize: fontSizes.xxl, fontWeight: '800', color: colors.white },
+    subtitle: { fontSize: fontSizes.md, color: 'rgba(255,255,255,0.85)' },
+    sectionTitle: {
+      fontSize: fontSizes.lg,
+      fontWeight: '700',
+      color: colors.text,
+      marginTop: spacing.sm,
+    },
+    empty: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.xl,
+      alignItems: 'center',
+    },
+    emptyText: { fontSize: fontSizes.md, color: colors.textMuted },
+    scheduleCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      flexDirection: 'row',
+      overflow: 'hidden',
+      minHeight: TouchTarget.minSize,
+      ...shadows.card,
+    },
+    scheduleStripe: { width: 6 },
+    scheduleBody: { flex: 1, padding: spacing.md, gap: spacing.xs },
+    scheduleTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    scheduleTime: { fontSize: fontSizes.md, fontWeight: '700', color: colors.primary },
+    categoryBadge: { borderRadius: borderRadius.full, paddingHorizontal: spacing.sm, paddingVertical: 2 },
+    categoryBadgeText: { color: colors.white, fontSize: fontSizes.xs, fontWeight: '700' },
+    scheduleTitle: { fontSize: fontSizes.md, fontWeight: '600', color: colors.text },
+    scheduleRoom: { fontSize: fontSizes.sm, color: colors.textMuted },
+    scheduleDesc: { fontSize: fontSizes.sm, color: colors.textMuted, lineHeight: Math.round(fontSizes.sm * 1.5) },
+    careTeamCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      ...shadows.card,
+    },
+    careTeamRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: TouchTarget.minSize },
+    careTeamAvatar: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    careTeamAvatarText: { color: colors.white, fontWeight: '800', fontSize: fontSizes.lg },
+    careTeamName: { fontSize: fontSizes.md, fontWeight: '700', color: colors.text },
+    careTeamRole: { fontSize: fontSizes.sm, color: colors.textMuted },
+    infoCard: {
+      backgroundColor: '#EAF4FB',
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      gap: spacing.xs,
+      borderLeftWidth: 4,
+      borderLeftColor: colors.primary,
+    },
+    infoTitle: { fontSize: fontSizes.md, fontWeight: '700', color: colors.primaryDark },
+    infoText: { fontSize: fontSizes.md, color: colors.primaryDark, lineHeight: Math.round(fontSizes.md * 1.5) },
+  }), [colors, fontSizes, spacing, borderRadius, shadows]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -38,13 +111,13 @@ export default function PatientDashboardScreen() {
           </View>
         ) : (
           myTasks.map((task) => (
-            <ScheduleCard key={task.id} task={task} />
+            <ScheduleCard key={task.id} task={task} styles={styles} />
           ))
         )}
 
         {/* Care team */}
         <Text style={styles.sectionTitle}>Your Care Team</Text>
-        <View style={styles.careTeamCard}>
+        <View style={styles.careTeamCard} accessibilityLabel="Caregiver: Demo Caregiver. Primary Caregiver">
           <View style={styles.careTeamRow}>
             <View style={styles.careTeamAvatar}>
               <Text style={styles.careTeamAvatarText}>DC</Text>
@@ -57,7 +130,7 @@ export default function PatientDashboardScreen() {
         </View>
 
         {/* Info footer */}
-        <View style={styles.infoCard}>
+        <View style={styles.infoCard} accessibilityLabel="Need Help? Contact your caregiver or call the nursing station if you need assistance.">
           <Text style={styles.infoTitle}>Need Help?</Text>
           <Text style={styles.infoText}>
             Contact your caregiver or call the nursing station if you need assistance.
@@ -68,7 +141,7 @@ export default function PatientDashboardScreen() {
   );
 }
 
-function ScheduleCard({ task }: { task: CareTask }) {
+function ScheduleCard({ task, styles }: { task: CareTask; styles: any }) {
   return (
     <View
       style={styles.scheduleCard}
@@ -92,73 +165,3 @@ function ScheduleCard({ task }: { task: CareTask }) {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  scroll: { padding: Spacing.lg, gap: Spacing.md, paddingBottom: Spacing.xxl },
-  hero: {
-    backgroundColor: Colors.secondary,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.lg,
-    gap: Spacing.xs,
-  },
-  greeting: { fontSize: FontSizes.xxl, fontWeight: '800', color: Colors.white },
-  subtitle: { fontSize: FontSizes.md, color: 'rgba(255,255,255,0.85)' },
-  sectionTitle: {
-    fontSize: FontSizes.lg,
-    fontWeight: '700',
-    color: Colors.grey900,
-    marginTop: Spacing.sm,
-  },
-  empty: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.xl,
-    alignItems: 'center',
-  },
-  emptyText: { fontSize: FontSizes.md, color: Colors.grey600 },
-  scheduleCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    flexDirection: 'row',
-    overflow: 'hidden',
-    minHeight: TouchTarget.minSize,
-    ...Shadows.card,
-  },
-  scheduleStripe: { width: 6 },
-  scheduleBody: { flex: 1, padding: Spacing.md, gap: Spacing.xs },
-  scheduleTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  scheduleTime: { fontSize: FontSizes.md, fontWeight: '700', color: Colors.primary },
-  categoryBadge: { borderRadius: BorderRadius.full, paddingHorizontal: Spacing.sm, paddingVertical: 2 },
-  categoryBadgeText: { color: Colors.white, fontSize: FontSizes.xs, fontWeight: '700' },
-  scheduleTitle: { fontSize: FontSizes.md, fontWeight: '600', color: Colors.grey900 },
-  scheduleRoom: { fontSize: FontSizes.sm, color: Colors.grey600 },
-  scheduleDesc: { fontSize: FontSizes.sm, color: Colors.grey600, lineHeight: 20 },
-  careTeamCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    ...Shadows.card,
-  },
-  careTeamRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, minHeight: TouchTarget.minSize },
-  careTeamAvatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  careTeamAvatarText: { color: Colors.white, fontWeight: '800', fontSize: FontSizes.lg },
-  careTeamName: { fontSize: FontSizes.md, fontWeight: '700', color: Colors.grey900 },
-  careTeamRole: { fontSize: FontSizes.sm, color: Colors.grey600 },
-  infoCard: {
-    backgroundColor: '#EAF4FB',
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    gap: Spacing.xs,
-    borderLeftWidth: 4,
-    borderLeftColor: Colors.primary,
-  },
-  infoTitle: { fontSize: FontSizes.md, fontWeight: '700', color: Colors.primaryDark },
-  infoText: { fontSize: FontSizes.md, color: Colors.primaryDark, lineHeight: 24 },
-});

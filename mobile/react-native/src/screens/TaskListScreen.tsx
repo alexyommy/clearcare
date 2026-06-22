@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -9,16 +9,97 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTasks } from '../hooks/useStore';
+import { useAppTheme } from '../hooks/useTheme';
 import { formatTime, getPriorityColor, getCategoryLabel } from '../utils/helpers';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius, Shadows } from '../utils/theme';
+import { TouchTarget } from '../utils/theme';
 import { CareTask } from '../types';
 
 export default function TaskListScreen() {
   const navigation = useNavigation<any>();
   const { pendingTasks, completedTasks, toggleTask } = useTasks();
   const [tab, setTab] = useState<'pending' | 'completed'>('pending');
+  const { colors, fontSizes, spacing, borderRadius, shadows } = useAppTheme();
 
   const displayedTasks = tab === 'pending' ? pendingTasks : completedTasks;
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      backgroundColor: colors.cardBg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    title: { fontSize: fontSizes.xxl, fontWeight: '800', color: colors.text },
+    addBtn: {
+      backgroundColor: colors.primary,
+      borderRadius: borderRadius.full,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      minHeight: TouchTarget.minSize,
+      justifyContent: 'center',
+    },
+    addBtnText: { color: colors.isDark ? colors.black : colors.white, fontSize: fontSizes.md, fontWeight: '700' },
+    tabs: {
+      flexDirection: 'row',
+      backgroundColor: colors.cardBg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    tab: {
+      flex: 1,
+      paddingVertical: spacing.md,
+      alignItems: 'center',
+      borderBottomWidth: 3,
+      borderBottomColor: 'transparent',
+      minHeight: TouchTarget.minSize,
+      justifyContent: 'center',
+    },
+    tabActive: { borderBottomColor: colors.primary },
+    tabText: { fontSize: fontSizes.md, color: colors.textMuted, fontWeight: '600' },
+    tabTextActive: { color: colors.primary },
+    list: { padding: spacing.md, gap: spacing.sm, paddingBottom: spacing.xxl },
+    taskCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      flexDirection: 'row',
+      overflow: 'hidden',
+      minHeight: TouchTarget.minSize,
+      ...shadows.card,
+    },
+    priorityStripe: { width: 6 },
+    taskBody: { flex: 1, padding: spacing.md, gap: spacing.xs },
+    taskTop: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
+    taskTitle: { flex: 1, fontSize: fontSizes.md, fontWeight: '600', color: colors.text },
+    taskTitleDone: { textDecorationLine: 'line-through', color: colors.textMuted },
+    taskMeta: { fontSize: fontSizes.sm, color: colors.textMuted },
+    badge: {
+      alignSelf: 'flex-start',
+      backgroundColor: colors.surface,
+      borderRadius: borderRadius.full,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+    },
+    badgeText: { fontSize: fontSizes.xs, color: colors.textMuted, fontWeight: '600' },
+    checkbox: { minWidth: TouchTarget.minSize, alignItems: 'center' },
+    checkInner: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      borderWidth: 2,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    checkInnerDone: { backgroundColor: colors.success, borderColor: colors.success },
+    checkMark: { color: colors.white, fontSize: 16, fontWeight: '700' },
+    empty: { flex: 1, alignItems: 'center', paddingTop: spacing.xxl },
+    emptyText: { fontSize: fontSizes.lg, color: colors.textMuted },
+  }), [colors, fontSizes, spacing, borderRadius, shadows]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -64,6 +145,7 @@ export default function TaskListScreen() {
             task={item}
             onPress={() => navigation.navigate('TaskDetail', { taskId: item.id })}
             onToggle={() => toggleTask(item.id)}
+            styles={styles}
           />
         )}
         ListEmptyComponent={
@@ -84,10 +166,12 @@ function TaskRow({
   task,
   onPress,
   onToggle,
+  styles,
 }: {
   task: CareTask;
   onPress: () => void;
   onToggle: () => void;
+  styles: any;
 }) {
   return (
     <TouchableOpacity
@@ -129,81 +213,3 @@ function TaskRow({
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.grey200,
-  },
-  title: { fontSize: FontSizes.xxl, fontWeight: '800', color: Colors.grey900 },
-  addBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: BorderRadius.full,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    minHeight: TouchTarget.minSize,
-    justifyContent: 'center',
-  },
-  addBtnText: { color: Colors.white, fontSize: FontSizes.md, fontWeight: '700' },
-  tabs: {
-    flexDirection: 'row',
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.grey200,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: Spacing.md,
-    alignItems: 'center',
-    borderBottomWidth: 3,
-    borderBottomColor: 'transparent',
-    minHeight: TouchTarget.minSize,
-    justifyContent: 'center',
-  },
-  tabActive: { borderBottomColor: Colors.primary },
-  tabText: { fontSize: FontSizes.md, color: Colors.grey600, fontWeight: '600' },
-  tabTextActive: { color: Colors.primary },
-  list: { padding: Spacing.md, gap: Spacing.sm, paddingBottom: Spacing.xxl },
-  taskCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    flexDirection: 'row',
-    overflow: 'hidden',
-    minHeight: TouchTarget.minSize,
-    ...Shadows.card,
-  },
-  priorityStripe: { width: 6 },
-  taskBody: { flex: 1, padding: Spacing.md, gap: Spacing.xs },
-  taskTop: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing.sm },
-  taskTitle: { flex: 1, fontSize: FontSizes.md, fontWeight: '600', color: Colors.grey900 },
-  taskTitleDone: { textDecorationLine: 'line-through', color: Colors.grey400 },
-  taskMeta: { fontSize: FontSizes.sm, color: Colors.grey600 },
-  badge: {
-    alignSelf: 'flex-start',
-    backgroundColor: Colors.grey100,
-    borderRadius: BorderRadius.full,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-  },
-  badgeText: { fontSize: FontSizes.xs, color: Colors.grey600, fontWeight: '600' },
-  checkbox: { minWidth: TouchTarget.minSize, alignItems: 'center' },
-  checkInner: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: Colors.grey300,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkInnerDone: { backgroundColor: Colors.success, borderColor: Colors.success },
-  checkMark: { color: Colors.white, fontSize: 16, fontWeight: '700' },
-  empty: { flex: 1, alignItems: 'center', paddingTop: Spacing.xxl },
-  emptyText: { fontSize: FontSizes.lg, color: Colors.grey600 },
-});

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTasks } from '../hooks/useStore';
+import { useAppTheme } from '../hooks/useTheme';
 import { formatTime, getPriorityColor, getPriorityLabel, getCategoryLabel, getCategoryColor } from '../utils/helpers';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius, Shadows } from '../utils/theme';
+import { TouchTarget } from '../utils/theme';
 import { RootStackParamList } from '../types';
 
 type RouteType = RouteProp<RootStackParamList, 'TaskDetail'>;
@@ -21,8 +22,81 @@ export default function TaskDetailScreen() {
   const route = useRoute<RouteType>();
   const { taskId } = route.params ?? { taskId: '' };
   const { tasks, toggleTask, deleteTask } = useTasks();
+  const { colors, fontSizes, spacing, borderRadius, shadows } = useAppTheme();
 
   const task = tasks.find((t) => t.id === taskId);
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing.xxl },
+    notFound: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md },
+    notFoundText: { fontSize: fontSizes.lg, color: colors.textMuted },
+    backBtn: {
+      backgroundColor: colors.primary,
+      borderRadius: borderRadius.md,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      minHeight: TouchTarget.minSize,
+      justifyContent: 'center',
+    },
+    backBtnText: { color: colors.isDark ? colors.black : colors.white, fontSize: fontSizes.md, fontWeight: '700' },
+    navRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    navBtn: { minHeight: TouchTarget.minSize, justifyContent: 'center' },
+    navBtnText: { color: colors.primary, fontSize: fontSizes.md, fontWeight: '600' },
+    deleteBtn: { minHeight: TouchTarget.minSize, justifyContent: 'center' },
+    deleteBtnText: { color: colors.error, fontSize: fontSizes.md, fontWeight: '600' },
+    statusBadge: {
+      alignSelf: 'flex-start',
+      borderRadius: borderRadius.full,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+    },
+    statusDone: { backgroundColor: '#D5F5E3' },
+    statusPending: { backgroundColor: '#FEF9E7' },
+    statusText: { fontSize: fontSizes.sm, fontWeight: '700', color: colors.black },
+    taskTitle: { fontSize: fontSizes.xxl, fontWeight: '800', color: colors.text, lineHeight: Math.round(fontSizes.xxl * 1.4) },
+    chips: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
+    chip: { borderRadius: borderRadius.full, paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
+    chipText: { color: colors.white, fontSize: fontSizes.sm, fontWeight: '700' },
+    detailCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      overflow: 'hidden',
+      ...shadows.card,
+    },
+    detailRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing.md,
+      gap: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      minHeight: TouchTarget.minSize,
+    },
+    detailIcon: { fontSize: 24, width: 32, textAlign: 'center' },
+    detailContent: { flex: 1 },
+    detailLabel: { fontSize: fontSizes.sm, color: colors.textMuted },
+    detailValue: { fontSize: fontSizes.md, fontWeight: '600', color: colors.text, marginTop: 2 },
+    descCard: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      padding: spacing.md,
+      gap: spacing.xs,
+      ...shadows.card,
+    },
+    descLabel: { fontSize: fontSizes.sm, color: colors.textMuted, fontWeight: '600' },
+    descText: { fontSize: fontSizes.md, color: colors.text, lineHeight: Math.round(fontSizes.md * 1.5) },
+    completeBtn: {
+      backgroundColor: colors.secondary,
+      borderRadius: borderRadius.md,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: spacing.md,
+    },
+    completeBtnDone: { backgroundColor: colors.grey400 },
+    completeBtnText: { color: colors.white, fontSize: fontSizes.lg, fontWeight: '700' },
+  }), [colors, fontSizes, spacing, borderRadius, shadows]);
 
   if (!task) {
     return (
@@ -107,7 +181,7 @@ export default function TaskDetailScreen() {
         {/* Detail rows */}
         <View style={styles.detailCard}>
           {rows.map((row) => (
-            <View key={row.label} style={styles.detailRow}>
+            <View key={row.label} style={styles.detailRow} accessibilityLabel={`${row.label}: ${row.value}`}>
               <Text style={styles.detailIcon}>{row.icon}</Text>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>{row.label}</Text>
@@ -142,74 +216,3 @@ export default function TaskDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  scroll: { padding: Spacing.lg, gap: Spacing.md, paddingBottom: Spacing.xxl },
-  notFound: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: Spacing.md },
-  notFoundText: { fontSize: FontSizes.lg, color: Colors.grey600 },
-  backBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    minHeight: TouchTarget.minSize,
-    justifyContent: 'center',
-  },
-  backBtnText: { color: Colors.white, fontSize: FontSizes.md, fontWeight: '700' },
-  navRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  navBtn: { minHeight: TouchTarget.minSize, justifyContent: 'center' },
-  navBtnText: { color: Colors.primary, fontSize: FontSizes.md, fontWeight: '600' },
-  deleteBtn: { minHeight: TouchTarget.minSize, justifyContent: 'center' },
-  deleteBtnText: { color: Colors.error, fontSize: FontSizes.md, fontWeight: '600' },
-  statusBadge: {
-    alignSelf: 'flex-start',
-    borderRadius: BorderRadius.full,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-  },
-  statusDone: { backgroundColor: '#D5F5E3' },
-  statusPending: { backgroundColor: '#FEF9E7' },
-  statusText: { fontSize: FontSizes.sm, fontWeight: '700', color: Colors.grey800 },
-  taskTitle: { fontSize: FontSizes.xxl, fontWeight: '800', color: Colors.grey900, lineHeight: 34 },
-  chips: { flexDirection: 'row', gap: Spacing.sm, flexWrap: 'wrap' },
-  chip: { borderRadius: BorderRadius.full, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs },
-  chipText: { color: Colors.white, fontSize: FontSizes.sm, fontWeight: '700' },
-  detailCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-    ...Shadows.card,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: Spacing.md,
-    gap: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.grey100,
-    minHeight: TouchTarget.minSize,
-  },
-  detailIcon: { fontSize: 24, width: 32, textAlign: 'center' },
-  detailContent: { flex: 1 },
-  detailLabel: { fontSize: FontSizes.sm, color: Colors.grey600 },
-  detailValue: { fontSize: FontSizes.md, fontWeight: '600', color: Colors.grey900, marginTop: 2 },
-  descCard: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    gap: Spacing.xs,
-    ...Shadows.card,
-  },
-  descLabel: { fontSize: FontSizes.sm, color: Colors.grey600, fontWeight: '600' },
-  descText: { fontSize: FontSizes.md, color: Colors.grey800, lineHeight: 24 },
-  completeBtn: {
-    backgroundColor: Colors.secondary,
-    borderRadius: BorderRadius.md,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacing.md,
-  },
-  completeBtnDone: { backgroundColor: Colors.grey400 },
-  completeBtnText: { color: Colors.white, fontSize: FontSizes.lg, fontWeight: '700' },
-});

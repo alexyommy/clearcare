@@ -1,12 +1,13 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
 
-import { useAuth } from '../hooks/useStore';
+import { useAuth, useSettings } from '../hooks/useStore';
+import { useAppTheme } from '../hooks/useTheme';
 import { AuthStackParamList, MainTabParamList, RootStackParamList } from '../types';
-import { Colors, FontSizes, TouchTarget } from '../utils/theme';
+import { TouchTarget } from '../utils/theme';
 
 // Screens
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -27,11 +28,11 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // ─── Tab icon helper ──────────────────────────────────────────────────────────
-function TabIcon({ emoji, label, focused }: { emoji: string; label: string; focused: boolean }) {
+function TabIcon({ emoji, label, focused, colors }: { emoji: string; label: string; focused: boolean; colors: any }) {
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', minWidth: TouchTarget.minSize, minHeight: TouchTarget.minSize }}>
       <Text style={{ fontSize: 22 }}>{emoji}</Text>
-      <Text style={{ fontSize: 10, color: focused ? Colors.primary : Colors.grey400, fontWeight: focused ? '700' : '400' }}>
+      <Text style={{ fontSize: 10, color: focused ? colors.primary : colors.textMuted, fontWeight: focused ? '700' : '400' }}>
         {label}
       </Text>
     </View>
@@ -52,14 +53,16 @@ function AuthNavigator() {
 
 // ─── Main tabs ────────────────────────────────────────────────────────────────
 function MainTabs({ role }: { role: 'caregiver' | 'patient' }) {
+  const { colors } = useAppTheme();
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: Colors.white,
-          borderTopColor: Colors.grey200,
+          backgroundColor: colors.cardBg,
+          borderTopColor: colors.border,
           height: 70,
           paddingBottom: 8,
         },
@@ -69,7 +72,7 @@ function MainTabs({ role }: { role: 'caregiver' | 'patient' }) {
         name="Dashboard"
         component={role === 'patient' ? PatientDashboardScreen : DashboardScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" label="Home" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" label="Home" focused={focused} colors={colors} />,
           tabBarAccessibilityLabel: 'Dashboard tab',
         }}
       />
@@ -77,7 +80,7 @@ function MainTabs({ role }: { role: 'caregiver' | 'patient' }) {
         name="Tasks"
         component={TaskListScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="✅" label="Tasks" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="✅" label="Tasks" focused={focused} colors={colors} />,
           tabBarAccessibilityLabel: 'Tasks tab',
         }}
       />
@@ -85,7 +88,7 @@ function MainTabs({ role }: { role: 'caregiver' | 'patient' }) {
         name="Calendar"
         component={CalendarScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="📅" label="Calendar" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="📅" label="Calendar" focused={focused} colors={colors} />,
           tabBarAccessibilityLabel: 'Calendar tab',
         }}
       />
@@ -93,7 +96,7 @@ function MainTabs({ role }: { role: 'caregiver' | 'patient' }) {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" label="Profile" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" label="Profile" focused={focused} colors={colors} />,
           tabBarAccessibilityLabel: 'Profile tab',
         }}
       />
@@ -101,7 +104,7 @@ function MainTabs({ role }: { role: 'caregiver' | 'patient' }) {
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon emoji="⚙️" label="Settings" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon emoji="⚙️" label="Settings" focused={focused} colors={colors} />,
           tabBarAccessibilityLabel: 'Settings tab',
         }}
       />
@@ -140,9 +143,25 @@ function RootNavigator() {
 
 // ─── App Navigator (exported) ─────────────────────────────────────────────────
 export default function AppNavigator() {
+  const { darkMode } = useSettings();
+  const { colors } = useAppTheme();
+
+  const MyTheme = {
+    ...(darkMode ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(darkMode ? DarkTheme.colors : DefaultTheme.colors),
+      primary: colors.primary,
+      background: colors.background,
+      card: colors.cardBg,
+      text: colors.text,
+      border: colors.border,
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       <RootNavigator />
     </NavigationContainer>
   );
 }
+

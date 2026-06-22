@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useSettings } from '../hooks/useStore';
-import { Colors, FontSizes, Spacing, TouchTarget, BorderRadius, Shadows } from '../utils/theme';
+import { useAppTheme } from '../hooks/useTheme';
+import { TouchTarget } from '../utils/theme';
 
 export default function SettingsScreen() {
   const {
@@ -23,13 +24,63 @@ export default function SettingsScreen() {
     togglePushNotifications,
   } = useSettings();
 
+  const { colors, fontSizes, spacing, borderRadius, shadows } = useAppTheme();
+
+  const styles = useMemo(() => StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xxl },
+    pageTitle: { fontSize: fontSizes.xxl, fontWeight: '800', color: colors.text, marginBottom: spacing.sm },
+    sectionHeader: {
+      fontSize: fontSizes.sm,
+      fontWeight: '700',
+      color: colors.textMuted,
+      letterSpacing: 1,
+      marginTop: spacing.md,
+      marginBottom: spacing.xs,
+    },
+    card: {
+      backgroundColor: colors.cardBg,
+      borderRadius: borderRadius.md,
+      overflow: 'hidden',
+      borderWidth: highContrast ? 2 : 0,
+      borderColor: colors.border,
+      ...shadows.card,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      minHeight: TouchTarget.minSize,
+    },
+    rowLeft: { flex: 1, gap: 2 },
+    rowLabel: { fontSize: fontSizes.md, fontWeight: '600', color: colors.text },
+    rowSub: { fontSize: fontSizes.sm, color: colors.textMuted },
+    rowValue: { fontSize: fontSizes.md, color: colors.textMuted },
+    divider: { height: 1, backgroundColor: colors.border, marginHorizontal: spacing.md },
+    fontSizeControls: { flexDirection: 'row', gap: spacing.sm },
+    fontBtn: {
+      backgroundColor: darkMode ? colors.surface : colors.border,
+      borderRadius: borderRadius.sm,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      minWidth: TouchTarget.minSize,
+      minHeight: TouchTarget.minSize,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    fontBtnText: { fontSize: fontSizes.md, fontWeight: '700', color: colors.primary },
+    fontBtnTextLg: { fontSize: fontSizes.lg, fontWeight: '700', color: colors.primary },
+  }), [colors, fontSizes, spacing, borderRadius, shadows, highContrast, darkMode]);
+
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.pageTitle} accessibilityRole="header">Settings</Text>
 
         {/* Accessibility */}
-        <SectionHeader title="ACCESSIBILITY" />
+        <SectionHeader title="ACCESSIBILITY" styles={styles} />
         <View style={styles.card}>
           {/* Font size */}
           <View style={styles.row}>
@@ -57,7 +108,7 @@ export default function SettingsScreen() {
             </View>
           </View>
 
-          <Divider />
+          <Divider styles={styles} />
 
           <ToggleRow
             label="High Contrast"
@@ -65,9 +116,11 @@ export default function SettingsScreen() {
             value={highContrast}
             onToggle={toggleHighContrast}
             accessibilityLabel="High contrast mode"
+            styles={styles}
+            colors={colors}
           />
 
-          <Divider />
+          <Divider styles={styles} />
 
           <ToggleRow
             label="Dark Mode"
@@ -75,11 +128,13 @@ export default function SettingsScreen() {
             value={darkMode}
             onToggle={toggleDarkMode}
             accessibilityLabel="Dark mode"
+            styles={styles}
+            colors={colors}
           />
         </View>
 
         {/* Notifications */}
-        <SectionHeader title="NOTIFICATIONS" />
+        <SectionHeader title="NOTIFICATIONS" styles={styles} />
         <View style={styles.card}>
           <ToggleRow
             label="Push Notifications"
@@ -87,18 +142,20 @@ export default function SettingsScreen() {
             value={pushNotifications}
             onToggle={togglePushNotifications}
             accessibilityLabel="Push notifications"
+            styles={styles}
+            colors={colors}
           />
         </View>
 
         {/* About */}
-        <SectionHeader title="ABOUT" />
+        <SectionHeader title="ABOUT" styles={styles} />
         <View style={styles.card}>
-          <View style={styles.row}>
+          <View style={styles.row} accessibilityLabel={`App Version: 1.0.0`}>
             <Text style={styles.rowLabel}>App Version</Text>
             <Text style={styles.rowValue}>1.0.0</Text>
           </View>
-          <Divider />
-          <View style={[styles.row, { borderBottomWidth: 0 }]}>
+          <Divider styles={styles} />
+          <View style={[styles.row, { borderBottomWidth: 0 }]} accessibilityLabel={`Course: SWEN 661, Team 2`}>
             <Text style={styles.rowLabel}>Course</Text>
             <Text style={styles.rowValue}>SWEN 661 · Team 2</Text>
           </View>
@@ -108,11 +165,11 @@ export default function SettingsScreen() {
   );
 }
 
-function SectionHeader({ title }: { title: string }) {
+function SectionHeader({ title, styles }: { title: string; styles: any }) {
   return <Text style={styles.sectionHeader}>{title}</Text>;
 }
 
-function Divider() {
+function Divider({ styles }: { styles: any }) {
   return <View style={styles.divider} />;
 }
 
@@ -122,12 +179,16 @@ function ToggleRow({
   value,
   onToggle,
   accessibilityLabel,
+  styles,
+  colors,
 }: {
   label: string;
   subtitle: string;
   value: boolean;
   onToggle: () => void;
   accessibilityLabel: string;
+  styles: any;
+  colors: any;
 }) {
   return (
     <View style={styles.row}>
@@ -138,8 +199,8 @@ function ToggleRow({
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: Colors.grey300, true: Colors.primaryLight }}
-        thumbColor={value ? Colors.primary : Colors.grey400}
+        trackColor={{ false: colors.grey300, true: colors.primaryLight }}
+        thumbColor={value ? colors.primary : colors.grey400}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole="switch"
         accessibilityState={{ checked: value }}
@@ -148,48 +209,3 @@ function ToggleRow({
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  scroll: { padding: Spacing.lg, gap: Spacing.sm, paddingBottom: Spacing.xxl },
-  pageTitle: { fontSize: FontSizes.xxl, fontWeight: '800', color: Colors.grey900, marginBottom: Spacing.sm },
-  sectionHeader: {
-    fontSize: FontSizes.sm,
-    fontWeight: '700',
-    color: Colors.grey600,
-    letterSpacing: 1,
-    marginTop: Spacing.md,
-    marginBottom: Spacing.xs,
-  },
-  card: {
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-    ...Shadows.card,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.md,
-    minHeight: TouchTarget.minSize,
-  },
-  rowLeft: { flex: 1, gap: 2 },
-  rowLabel: { fontSize: FontSizes.md, fontWeight: '600', color: Colors.grey900 },
-  rowSub: { fontSize: FontSizes.sm, color: Colors.grey600 },
-  rowValue: { fontSize: FontSizes.md, color: Colors.grey600 },
-  divider: { height: 1, backgroundColor: Colors.grey100, marginHorizontal: Spacing.md },
-  fontSizeControls: { flexDirection: 'row', gap: Spacing.sm },
-  fontBtn: {
-    backgroundColor: Colors.grey100,
-    borderRadius: BorderRadius.sm,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    minWidth: TouchTarget.minSize,
-    minHeight: TouchTarget.minSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fontBtnText: { fontSize: FontSizes.md, fontWeight: '700', color: Colors.primary },
-  fontBtnTextLg: { fontSize: FontSizes.lg, fontWeight: '700', color: Colors.primary },
-});
