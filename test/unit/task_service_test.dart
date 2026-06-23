@@ -68,7 +68,6 @@ void main() {
     });
 
     test('completedCount increases after marking complete', () {
-      final id = service.getTasks().first.id;
       final updated = service.getTasks().first.copyWith(isCompleted: true);
       service.updateTask(updated);
       expect(service.completedCount, 1);

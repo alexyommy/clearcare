@@ -9,27 +9,25 @@ import 'package:careconnect_flutter/state/auth_notifier.dart';
 import 'package:careconnect_flutter/state/task_notifier.dart';
 import 'package:careconnect_flutter/services/auth_service.dart';
 import 'package:careconnect_flutter/services/task_service.dart';
-import 'package:careconnect_flutter/models/task_model.dart';
-
 Widget _buildDashboard() {
   final router = GoRouter(
     initialLocation: '/dashboard',
     routes: [
       GoRoute(
           path: '/dashboard',
-          builder: (_, __) => const DashboardScreen()),
+          builder: (_, _) => const DashboardScreen()),
       GoRoute(
           path: '/tasks',
-          builder: (_, __) => const Scaffold(body: Text('Tasks'))),
+          builder: (_, _) => const Scaffold(body: Text('Tasks'))),
       GoRoute(
           path: '/tasks/:id',
           builder: (_, s) => Scaffold(body: Text('Detail ${s.pathParameters['id']}'))),
       GoRoute(
           path: '/calendar',
-          builder: (_, __) => const Scaffold(body: Text('Cal'))),
+          builder: (_, _) => const Scaffold(body: Text('Cal'))),
       GoRoute(
           path: '/profile',
-          builder: (_, __) => const Scaffold(body: Text('Profile'))),
+          builder: (_, _) => const Scaffold(body: Text('Profile'))),
     ],
   );
 
@@ -103,11 +101,11 @@ void main() {
       initialLocation: '/dashboard',
       routes: [
         GoRoute(
-            path: '/dashboard', builder: (_, __) => const DashboardScreen()),
-        GoRoute(path: '/tasks', builder: (_, __) => const Scaffold()),
-        GoRoute(path: '/calendar', builder: (_, __) => const Scaffold()),
-        GoRoute(path: '/profile', builder: (_, __) => const Scaffold()),
-        GoRoute(path: '/tasks/:id', builder: (_, __) => const Scaffold()),
+            path: '/dashboard', builder: (_, _) => const DashboardScreen()),
+        GoRoute(path: '/tasks', builder: (_, _) => const Scaffold()),
+        GoRoute(path: '/calendar', builder: (_, _) => const Scaffold()),
+        GoRoute(path: '/profile', builder: (_, _) => const Scaffold()),
+        GoRoute(path: '/tasks/:id', builder: (_, _) => const Scaffold()),
       ],
     );
     await tester.pumpWidget(ProviderScope(

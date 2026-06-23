@@ -1,0 +1,31 @@
+appId: com.careconnect.careconnect_flutter
+name: Flutter Dashboard -> Create Task
+---
+- launchApp
+- tapOn: "Email address"
+- inputText: "demo@careconnect.com"
+- tapOn: "Password"
+- inputText: "demo123"
+- tapOn: "Sign in"
+- assertVisible: "CareConnect"
+- tapOn: "View all"
+- assertVisible: "Add Task"
+- tapOn: "Add Task"
+- tapOn: "e.g. Administer medication"
+- inputText: "Maestro E2E task"
+- tapOn: "e.g. 8:00 AM"
+- inputText: "10:30 AM"
+- tapOn: "e.g. Room 204 or Mary Johnson"
+- inputText: "Room 101"
+- scrollUntilVisible:
+    element:
+      text: "Create Task"
+    direction: DOWN
+- tapOn: "Create Task"
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      text: "Maestro E2E task.*"
+    direction: DOWN
+    centerElement: true
+- assertVisible: "Maestro E2E task.*"

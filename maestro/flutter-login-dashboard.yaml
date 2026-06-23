@@ -1,0 +1,11 @@
+appId: com.careconnect.careconnect_flutter
+name: Flutter Login -> Dashboard
+---
+- launchApp
+- tapOn: "Email address"
+- inputText: "demo@careconnect.com"
+- tapOn: "Password"
+- inputText: "demo123"
+- tapOn: "Sign in"
+- assertVisible: "CareConnect"
+- assertVisible: "View all"

@@ -8,7 +8,8 @@
 ///   5. Profile → Sign Out → Login
 ///
 /// Run with:
-///   flutter test integration_test/app_test.dart -d <device-id>
+///   `flutter test integration_test/app_test.dart -d <device-id>`
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -181,9 +182,6 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.task));
       await tester.pumpAndSettle();
-
-      final pendingBefore = find.textContaining('Pending (').evaluate().first;
-      final pendingCountBefore = (pendingBefore.widget as Text).data!;
 
       await tester.tap(find.text('Add Task'));
       await tester.pumpAndSettle();

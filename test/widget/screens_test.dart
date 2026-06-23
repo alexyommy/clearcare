@@ -29,9 +29,9 @@ Widget _wrap(Widget screen, {String initialLocation = '/'}) {
   final router = GoRouter(
     initialLocation: initialLocation,
     routes: [
-      GoRoute(path: '/', builder: (_, __) => screen),
-      GoRoute(path: '/tasks', builder: (_, __) => const Scaffold()),
-      GoRoute(path: '/tasks/new', builder: (_, __) => const Scaffold()),
+      GoRoute(path: '/', builder: (_, _) => screen),
+      GoRoute(path: '/tasks', builder: (_, _) => const Scaffold()),
+      GoRoute(path: '/tasks/new', builder: (_, _) => const Scaffold()),
       GoRoute(
           path: '/tasks/:id',
           builder: (_, s) => TaskDetailScreen(
@@ -40,11 +40,11 @@ Widget _wrap(Widget screen, {String initialLocation = '/'}) {
           path: '/tasks/:id/edit',
           builder: (_, s) => CreateEditTaskScreen(
               taskId: s.pathParameters['id'])),
-      GoRoute(path: '/login', builder: (_, __) => const Scaffold()),
-      GoRoute(path: '/profile', builder: (_, __) => const Scaffold()),
-      GoRoute(path: '/settings', builder: (_, __) => const Scaffold()),
-      GoRoute(path: '/calendar', builder: (_, __) => const Scaffold()),
-      GoRoute(path: '/dashboard', builder: (_, __) => const Scaffold()),
+      GoRoute(path: '/login', builder: (_, _) => const Scaffold()),
+      GoRoute(path: '/profile', builder: (_, _) => const Scaffold()),
+      GoRoute(path: '/settings', builder: (_, _) => const Scaffold()),
+      GoRoute(path: '/calendar', builder: (_, _) => const Scaffold()),
+      GoRoute(path: '/dashboard', builder: (_, _) => const Scaffold()),
     ],
   );
 

@@ -11,10 +11,10 @@ Widget _buildLoginScreen() {
   final router = GoRouter(
     initialLocation: '/login',
     routes: [
-      GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
       GoRoute(
           path: '/dashboard',
-          builder: (_, __) => const Scaffold(body: Text('Dashboard'))),
+          builder: (_, _) => const Scaffold(body: Text('Dashboard'))),
     ],
   );
 

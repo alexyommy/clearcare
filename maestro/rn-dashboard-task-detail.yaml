@@ -1,0 +1,27 @@
+appId: host.exp.exponent
+name: RN Dashboard -> Task Detail -> Mark Complete
+---
+- launchApp
+- openLink: exp://10.0.2.2:8081
+- tapOn:
+    text: "Continue"
+    optional: true
+- tapOn: "Sign In"
+- tapOn: "Email address"
+- inputText: "demo@careconnect.com"
+- tapOn: "Password"
+- inputText: "demo123"
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      text: "Today's Tasks"
+    timeout: 8000
+- tapOn: "View all"
+- assertVisible: "Tasks"
+- tapOn:
+    text: "Morning medication round"
+- assertVisible: "Morning medication round"
+- assertVisible: "Mark as Complete"
+- tapOn: "Mark as Complete"
+- waitForAnimationToEnd
+- assertVisible: "Mark as Pending"
