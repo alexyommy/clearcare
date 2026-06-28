@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store/store';
+import { useTheme } from '../utils/useTheme';
 import { formatTime, getCategoryColor, getCategoryLabel, getPriorityColor, getPriorityLabel } from '../utils/helpers';
 import { CareTask } from '../store/types';
 
@@ -8,14 +9,14 @@ export default function TasksScreen() {
   const toggleTask = useAppStore((s) => s.toggleTask);
   const deleteTask = useAppStore((s) => s.deleteTask);
   const searchQuery = useAppStore((s) => s.searchQuery);
-  const darkMode = useAppStore((s) => s.darkMode);
+  const { fs, colors: c } = useTheme();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const cardBg = darkMode ? '#2C2C2E' : '#FFFFFF';
-  const text = darkMode ? '#FFFFFF' : '#212121';
-  const textMuted = darkMode ? '#BDBDBD' : '#757575';
-  const border = darkMode ? '#424242' : '#E0E0E0';
-  const panelBg = darkMode ? '#1E1E1E' : '#F8FAFB';
+  const cardBg = c.cardBg;
+  const text = c.text;
+  const textMuted = c.textMuted;
+  const border = c.border;
+  const panelBg = c.surface;
 
   const filtered = tasks.filter((t) =>
     t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -30,7 +31,7 @@ export default function TasksScreen() {
       {/* Task list panel */}
       <div style={{ flex: 1, overflow: 'auto', padding: 24 }} role="region" aria-label="Task list">
         {/* Pending */}
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: textMuted, letterSpacing: 1, margin: '0 0 12px' }}>
+        <h3 style={{ fontSize: fs.sm, fontWeight: 700, color: textMuted, letterSpacing: 1, margin: '0 0 12px' }}>
           PENDING ({pending.length})
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -52,7 +53,7 @@ export default function TasksScreen() {
         {/* Completed */}
         {completed.length > 0 && (
           <>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: textMuted, letterSpacing: 1, margin: '24px 0 12px' }}>
+            <h3 style={{ fontSize: fs.sm, fontWeight: 700, color: textMuted, letterSpacing: 1, margin: '24px 0 12px' }}>
               COMPLETED ({completed.length})
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -102,7 +103,7 @@ export default function TasksScreen() {
             textMuted={textMuted}
             cardBg={cardBg}
             border={border}
-            darkMode={darkMode}
+            darkMode={c.bg === '#121212'}
           />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: textMuted, gap: 8 }}>
@@ -148,7 +149,7 @@ function TaskRow({ task, selected, onSelect, onToggle, cardBg, text, textMuted, 
           border: task.isCompleted ? 'none' : `2px solid ${border}`,
           backgroundColor: task.isCompleted ? '#1E8449' : 'transparent',
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#fff', fontSize: 14, fontWeight: 700, flexShrink: 0, padding: 0,
+          color: '#fff', fontSize: fs.sm, fontWeight: 700, flexShrink: 0, padding: 0,
         }}
       >
         {task.isCompleted ? '✓' : ''}
@@ -160,19 +161,19 @@ function TaskRow({ task, selected, onSelect, onToggle, cardBg, text, textMuted, 
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
-          fontSize: 14, fontWeight: 600, color: text,
+          fontSize: fs.sm, fontWeight: 600, color: text,
           textDecoration: task.isCompleted ? 'line-through' : 'none',
           opacity: task.isCompleted ? 0.6 : 1,
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>{task.title}</div>
-        <div style={{ fontSize: 12, color: textMuted, marginTop: 2 }}>
+        <div style={{ fontSize: fs.xs, color: textMuted, marginTop: 2 }}>
           {formatTime(task.time)} · {task.room}
         </div>
       </div>
 
       {/* Category badge */}
       <span style={{
-        fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+        fontSize: fs.xs, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
         backgroundColor: getCategoryColor(task.category) + '20',
         color: getCategoryColor(task.category),
       }}>
@@ -197,14 +198,14 @@ function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border,
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Status */}
       <span style={{
-        alignSelf: 'flex-start', padding: '4px 12px', borderRadius: 99, fontSize: 13, fontWeight: 700,
+        alignSelf: 'flex-start', padding: '4px 12px', borderRadius: 99, fontSize: fs.xs, fontWeight: 700,
         backgroundColor: task.isCompleted ? '#D5F5E3' : '#FEF9E7',
         color: task.isCompleted ? '#1E8449' : '#D68910',
       }}>
         {task.isCompleted ? '✓ Completed' : '⏳ Pending'}
       </span>
 
-      <h2 style={{ fontSize: 22, fontWeight: 800, color: text, margin: 0, lineHeight: 1.3 }}>{task.title}</h2>
+      <h2 style={{ fontSize: fs.xxl, fontWeight: 800, color: text, margin: 0, lineHeight: 1.3 }}>{task.title}</h2>
 
       {/* Detail rows */}
       <div style={{ backgroundColor: cardBg, borderRadius: 8, border: `1px solid ${border}`, overflow: 'hidden' }}>
@@ -213,10 +214,10 @@ function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border,
             display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px',
             borderBottom: i < rows.length - 1 ? `1px solid ${border}` : 'none',
           }}>
-            <span style={{ fontSize: 18, width: 28, textAlign: 'center' }} aria-hidden="true">{r.icon}</span>
+            <span style={{ fontSize: fs.lg, width: 28, textAlign: 'center' }} aria-hidden="true">{r.icon}</span>
             <div>
-              <div style={{ fontSize: 12, color: textMuted }}>{r.label}</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: text }}>{r.value}</div>
+              <div style={{ fontSize: fs.xs, color: textMuted }}>{r.label}</div>
+              <div style={{ fontSize: fs.sm, fontWeight: 600, color: text }}>{r.value}</div>
             </div>
           </div>
         ))}
@@ -225,8 +226,8 @@ function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border,
       {/* Notes */}
       {task.description && (
         <div style={{ backgroundColor: cardBg, borderRadius: 8, padding: 14, border: `1px solid ${border}` }}>
-          <div style={{ fontSize: 12, color: textMuted, fontWeight: 600, marginBottom: 4 }}>Notes</div>
-          <div style={{ fontSize: 14, color: text, lineHeight: 1.6 }}>{task.description}</div>
+          <div style={{ fontSize: fs.xs, color: textMuted, fontWeight: 600, marginBottom: 4 }}>Notes</div>
+          <div style={{ fontSize: fs.sm, color: text, lineHeight: 1.6 }}>{task.description}</div>
         </div>
       )}
 
@@ -237,7 +238,7 @@ function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border,
           style={{
             flex: 1, padding: '12px 0', borderRadius: 8, border: 'none',
             backgroundColor: task.isCompleted ? '#BDBDBD' : '#1E8449',
-            color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+            color: '#fff', fontSize: fs.md, fontWeight: 700, cursor: 'pointer',
           }}
           aria-label={task.isCompleted ? 'Mark as pending' : 'Mark as complete'}
         >
@@ -247,7 +248,7 @@ function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border,
           onClick={onDelete}
           style={{
             padding: '12px 20px', borderRadius: 8, border: 'none',
-            backgroundColor: '#C0392B', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+            backgroundColor: '#C0392B', color: '#fff', fontSize: fs.md, fontWeight: 700, cursor: 'pointer',
           }}
           aria-label="Delete task"
         >

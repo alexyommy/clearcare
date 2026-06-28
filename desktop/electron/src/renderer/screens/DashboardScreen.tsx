@@ -1,22 +1,23 @@
 import React from 'react';
 import { useAppStore } from '../store/store';
+import { useTheme } from '../utils/useTheme';
 import { getGreeting, formatTime, getCategoryColor, getPriorityColor } from '../utils/helpers';
 
 export default function DashboardScreen() {
   const user = useAppStore((s) => s.user);
   const tasks = useAppStore((s) => s.tasks);
   const setScreen = useAppStore((s) => s.setScreen);
-  const darkMode = useAppStore((s) => s.darkMode);
+  const { fs, colors: c } = useTheme();
 
   const pending = tasks.filter((t) => !t.isCompleted);
   const completed = tasks.filter((t) => t.isCompleted);
   const preview = pending.slice(0, 5);
   const greeting = getGreeting(user?.name?.split(' ')[0] ?? 'Caregiver');
 
-  const cardBg = darkMode ? '#2C2C2E' : '#FFFFFF';
-  const text = darkMode ? '#FFFFFF' : '#212121';
-  const textMuted = darkMode ? '#BDBDBD' : '#757575';
-  const border = darkMode ? '#424242' : '#E0E0E0';
+  const cardBg = c.cardBg;
+  const text = c.text;
+  const textMuted = c.textMuted;
+  const border = c.border;
 
   const stats = [
     { label: 'Pending', value: pending.length, color: '#D68910' },
@@ -28,8 +29,8 @@ export default function DashboardScreen() {
     <div style={{ padding: 32, maxWidth: 1200, overflow: 'auto', height: '100%' }}>
       {/* Greeting */}
       <section aria-label="Welcome">
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: '#1A5276', margin: 0 }}>{greeting}</h2>
-        <p style={{ fontSize: 14, color: textMuted, marginTop: 4 }}>
+        <h2 style={{ fontSize: fs.xxxl, fontWeight: 800, color: '#1A5276', margin: 0 }}>{greeting}</h2>
+        <p style={{ fontSize: fs.sm, color: textMuted, marginTop: 4 }}>
           {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
       </section>
@@ -51,8 +52,8 @@ export default function DashboardScreen() {
             }}
             aria-label={`${s.label}: ${s.value} tasks`}
           >
-            <div style={{ fontSize: 36, fontWeight: 800, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: 14, color: textMuted, marginTop: 4 }}>{s.label}</div>
+            <div style={{ fontSize: fs.display, fontWeight: 800, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: fs.sm, color: textMuted, marginTop: 4 }}>{s.label}</div>
           </div>
         ))}
       </section>
@@ -60,12 +61,12 @@ export default function DashboardScreen() {
       {/* Task preview */}
       <section aria-label="Today's tasks" style={{ marginTop: 32 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: 20, fontWeight: 700, color: text, margin: 0 }}>Today's Tasks</h3>
+          <h3 style={{ fontSize: fs.xl, fontWeight: 700, color: text, margin: 0 }}>Today's Tasks</h3>
           <button
             onClick={() => setScreen('tasks')}
             style={{
               border: 'none', background: 'none', color: '#1A5276',
-              fontSize: 14, fontWeight: 600, cursor: 'pointer', padding: '8px 0',
+              fontSize: fs.sm, fontWeight: 600, cursor: 'pointer', padding: '8px 0',
             }}
             aria-label="View all tasks"
           >
@@ -75,8 +76,8 @@ export default function DashboardScreen() {
 
         {preview.length === 0 ? (
           <div style={{ backgroundColor: cardBg, borderRadius: 12, padding: 40, textAlign: 'center', marginTop: 12, border: `1px solid ${border}` }}>
-            <div style={{ fontSize: 32 }}>🎉</div>
-            <p style={{ fontSize: 16, color: '#1E8449', fontWeight: 600, marginTop: 8 }}>All tasks complete!</p>
+            <div style={{ fontSize: fs.display }}>🎉</div>
+            <p style={{ fontSize: fs.md, color: '#1E8449', fontWeight: 600, marginTop: 8 }}>All tasks complete!</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
@@ -101,8 +102,8 @@ export default function DashboardScreen() {
               >
                 <div style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: getCategoryColor(task.category), flexShrink: 0 }} aria-hidden="true" />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.title}</div>
-                  <div style={{ fontSize: 13, color: textMuted, marginTop: 2 }}>{formatTime(task.time)} · {task.room}</div>
+                  <div style={{ fontSize: fs.md, fontWeight: 600, color: text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.title}</div>
+                  <div style={{ fontSize: fs.xs, color: textMuted, marginTop: 2 }}>{formatTime(task.time)} · {task.room}</div>
                 </div>
                 <div style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: getPriorityColor(task.priority), flexShrink: 0 }} aria-hidden="true" />
               </div>
@@ -113,7 +114,7 @@ export default function DashboardScreen() {
 
       {/* Quick access */}
       <section aria-label="Quick access" style={{ marginTop: 32 }}>
-        <h3 style={{ fontSize: 20, fontWeight: 700, color: text, margin: 0 }}>Quick Access</h3>
+        <h3 style={{ fontSize: fs.xl, fontWeight: 700, color: text, margin: 0 }}>Quick Access</h3>
         <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
           {[
             { label: 'Calendar', icon: '📅', screen: 'calendar' },
@@ -130,7 +131,7 @@ export default function DashboardScreen() {
               aria-label={`Go to ${item.label}`}
             >
               <span style={{ fontSize: 28 }} aria-hidden="true">{item.icon}</span>
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#1A5276' }}>{item.label}</span>
+              <span style={{ fontSize: fs.sm, fontWeight: 600, color: '#1A5276' }}>{item.label}</span>
             </button>
           ))}
         </div>

@@ -47,11 +47,22 @@ export default function App() {
     });
   }, []);
 
-  // Apply dynamic font size and theme to body
+  // Apply dynamic font size — set CSS custom properties so all components scale
+  const scale = fontSize / 16;
   useEffect(() => {
-    document.documentElement.style.setProperty('--font-base', `${fontSize}px`);
+    const r = document.documentElement;
+    r.style.setProperty('--font-base', `${fontSize}px`);
+    r.style.setProperty('--font-scale', `${scale}`);
+    r.style.setProperty('--fs-xs', `${Math.round(12 * scale)}px`);
+    r.style.setProperty('--fs-sm', `${Math.round(14 * scale)}px`);
+    r.style.setProperty('--fs-md', `${Math.round(16 * scale)}px`);
+    r.style.setProperty('--fs-lg', `${Math.round(18 * scale)}px`);
+    r.style.setProperty('--fs-xl', `${Math.round(20 * scale)}px`);
+    r.style.setProperty('--fs-xxl', `${Math.round(24 * scale)}px`);
+    r.style.setProperty('--fs-xxxl', `${Math.round(28 * scale)}px`);
+    r.style.setProperty('--fs-display', `${Math.round(32 * scale)}px`);
     document.body.style.fontSize = `${fontSize}px`;
-  }, [fontSize]);
+  }, [fontSize, scale]);
 
   useEffect(() => {
     if (highContrast) {
