@@ -46,6 +46,7 @@ export default function TasksScreen() {
               text={text}
               textMuted={textMuted}
               border={border}
+              fs={fs}
             />
           ))}
         </div>
@@ -68,6 +69,7 @@ export default function TasksScreen() {
                   text={text}
                   textMuted={textMuted}
                   border={border}
+                  fs={fs}
                 />
               ))}
             </div>
@@ -104,6 +106,7 @@ export default function TasksScreen() {
             cardBg={cardBg}
             border={border}
             darkMode={c.bg === '#121212'}
+            fs={fs}
           />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: textMuted, gap: 8 }}>
@@ -116,9 +119,9 @@ export default function TasksScreen() {
   );
 }
 
-function TaskRow({ task, selected, onSelect, onToggle, cardBg, text, textMuted, border }: {
+function TaskRow({ task, selected, onSelect, onToggle, cardBg, text, textMuted, border, fs }: {
   task: CareTask; selected: boolean; onSelect: () => void; onToggle: () => void;
-  cardBg: string; text: string; textMuted: string; border: string;
+  cardBg: string; text: string; textMuted: string; border: string; fs: any;
 }) {
   return (
     <div
@@ -183,9 +186,9 @@ function TaskRow({ task, selected, onSelect, onToggle, cardBg, text, textMuted, 
   );
 }
 
-function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border, darkMode }: {
+function TaskDetail({ task, onToggle, onDelete, text, textMuted, cardBg, border, darkMode, fs }: {
   task: CareTask; onToggle: () => void; onDelete: () => void;
-  text: string; textMuted: string; cardBg: string; border: string; darkMode: boolean;
+  text: string; textMuted: string; cardBg: string; border: string; darkMode: boolean; fs: any;
 }) {
   const rows = [
     { label: 'Time', value: formatTime(task.time), icon: '🕐' },

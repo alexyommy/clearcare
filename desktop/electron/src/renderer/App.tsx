@@ -3,6 +3,7 @@ import { useAppStore } from './store/store';
 import Sidebar from './components/Sidebar';
 import Toolbar from './components/Toolbar';
 import ShortcutsDialog from './components/ShortcutsDialog';
+import NewTaskDialog from './components/NewTaskDialog';
 import DashboardScreen from './screens/DashboardScreen';
 import TasksScreen from './screens/TasksScreen';
 import CalendarScreen from './screens/CalendarScreen';
@@ -35,7 +36,14 @@ export default function App() {
       const store = useAppStore.getState();
       switch (action) {
         case 'new-task': store.setShowNewTask(true); store.setScreen('tasks'); break;
-        case 'save': break; // placeholder
+        case 'save': {
+          // If the New Task dialog is open, submit it; otherwise no-op (nothing else to save yet)
+          const dialog = document.querySelector('dialog[aria-label="Create new task"] form');
+          if (dialog instanceof HTMLFormElement) {
+            dialog.requestSubmit();
+          }
+          break;
+        }
         case 'search': document.querySelector<HTMLInputElement>('input[type="search"]')?.focus(); break;
         case 'font-increase': store.increaseFontSize(); break;
         case 'font-decrease': store.decreaseFontSize(); break;
@@ -98,6 +106,7 @@ export default function App() {
         </div>
       </div>
       <ShortcutsDialog />
+      <NewTaskDialog />
     </>
   );
 }
