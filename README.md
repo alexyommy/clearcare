@@ -373,3 +373,47 @@ The React Native implementation contains **174 passing tests** with **87.72% lin
 ## Demo Login Credentials
 Email: 'demo@careconnect.com'
 Password: 'demo123'
+
+
+## Desktop (Electron) Implementation
+
+The desktop version of CareConnect is located in:
+
+```bash
+cd desktop/electron
+```
+
+### Setup
+
+```bash
+npm install
+```
+
+### Running the App
+
+```bash
+npm start
+```
+
+> `npm start` launches Electron directly — it does **not** rebuild the renderer bundle first. If you change any files under `src/renderer/`, rebuild before restarting:
+> ```bash
+> node build.js
+> ```
+
+### Running Tests
+
+```bash
+npm test
+```
+
+Generate a coverage report:
+
+```bash
+npm test -- --coverage
+```
+
+### Building the App
+
+```bash
+npm run dist
+```
