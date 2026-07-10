@@ -124,64 +124,68 @@ function TaskRow({ task, selected, onSelect, onToggle, cardBg, text, textMuted, 
   cardBg: string; text: string; textMuted: string; border: string; fs: any;
 }) {
   return (
-    <div
-      onClick={onSelect}
-      onKeyDown={(e) => { if (e.key === 'Enter') onSelect(); }}
-      tabIndex={0}
-      role="button"
-      aria-label={`${task.title}, ${formatTime(task.time)}, ${task.room}${task.isCompleted ? ', completed' : ', pending'}`}
-      aria-pressed={selected}
-      style={{
-        backgroundColor: cardBg,
-        borderRadius: 8,
-        padding: '12px 14px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 12,
-        border: selected ? '2px solid #1A5276' : `1px solid ${border}`,
-        cursor: 'pointer',
-        transition: 'border 0.1s',
-      }}
-    >
-      {/* Checkbox */}
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      {/* Checkbox — sibling of the row card, not nested inside it (WCAG 4.1.2 / axe nested-interactive) */}
       <button
-        onClick={(e) => { e.stopPropagation(); onToggle(); }}
+        onClick={onToggle}
         aria-label={task.isCompleted ? 'Mark as pending' : 'Mark as complete'}
         style={{
-          width: 24, height: 24, borderRadius: 12,
+          width: 24, height: 24, borderRadius: 12, flexShrink: 0,
           border: task.isCompleted ? 'none' : `2px solid ${border}`,
           backgroundColor: task.isCompleted ? '#1E8449' : 'transparent',
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#fff', fontSize: fs.sm, fontWeight: 700, flexShrink: 0, padding: 0,
+          color: '#fff', fontSize: fs.sm, fontWeight: 700, padding: 0,
         }}
       >
         {task.isCompleted ? '✓' : ''}
       </button>
 
-      {/* Priority stripe */}
-      <div style={{ width: 4, height: 32, borderRadius: 2, backgroundColor: getPriorityColor(task.priority), flexShrink: 0 }} aria-hidden="true" />
+      {/* Row card */}
+      <div
+        onClick={onSelect}
+        onKeyDown={(e) => { if (e.key === 'Enter') onSelect(); }}
+        tabIndex={0}
+        role="button"
+        aria-label={`${task.title}, ${formatTime(task.time)}, ${task.room}${task.isCompleted ? ', completed' : ', pending'}`}
+        aria-pressed={selected}
+        style={{
+          flex: 1,
+          backgroundColor: cardBg,
+          borderRadius: 8,
+          padding: '12px 14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          border: selected ? '2px solid #1A5276' : `1px solid ${border}`,
+          cursor: 'pointer',
+          transition: 'border 0.1s',
+        }}
+      >
+        {/* Priority stripe */}
+        <div style={{ width: 4, height: 32, borderRadius: 2, backgroundColor: getPriorityColor(task.priority), flexShrink: 0 }} aria-hidden="true" />
 
-      {/* Info */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontSize: fs.sm, fontWeight: 600, color: text,
-          textDecoration: task.isCompleted ? 'line-through' : 'none',
-          opacity: task.isCompleted ? 0.6 : 1,
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-        }}>{task.title}</div>
-        <div style={{ fontSize: fs.xs, color: textMuted, marginTop: 2 }}>
-          {formatTime(task.time)} · {task.room}
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontSize: fs.sm, fontWeight: 600, color: text,
+            textDecoration: task.isCompleted ? 'line-through' : 'none',
+            opacity: task.isCompleted ? 0.6 : 1,
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>{task.title}</div>
+          <div style={{ fontSize: fs.xs, color: textMuted, marginTop: 2 }}>
+            {formatTime(task.time)} · {task.room}
+          </div>
         </div>
-      </div>
 
-      {/* Category badge */}
-      <span style={{
-        fontSize: fs.xs, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
-        backgroundColor: getCategoryColor(task.category) + '20',
-        color: getCategoryColor(task.category),
-      }}>
-        {getCategoryLabel(task.category)}
-      </span>
+        {/* Category badge */}
+        <span style={{
+          fontSize: fs.xs, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+          backgroundColor: getCategoryColor(task.category) + '20',
+          color: getCategoryColor(task.category),
+        }}>
+          {getCategoryLabel(task.category)}
+        </span>
+      </div>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function Toolbar() {
   const inputBg = darkMode ? '#1E1E1E' : '#F5F5F5';
 
   return (
-    <header
+    <div
       style={{
         height: 48,
         backgroundColor: bg,
@@ -84,6 +84,6 @@ export default function Toolbar() {
           </button>
         )}
       </div>
-    </header>
+    </div>
   );
 }
