@@ -59,7 +59,7 @@ export default function CalendarScreen() {
                 {cells.slice(rowIdx * 7, rowIdx * 7 + 7).map((day, colIdx) => {
                   const isToday = day === today.getDate();
                   const label = day
-                    ? `${DAYS[colIdx + rowIdx * 7 < firstDayOfMonth ? 0 : (rowIdx * 7 + colIdx - firstDayOfMonth) % 7]}, ${MONTHS[month]} ${day}${isToday ? ', today' : ''}`
+                    ? `${DAYS[colIdx]}, ${MONTHS[month]} ${day}${isToday ? ', today' : ''}`
                     : undefined;
                   return (
                     <div
