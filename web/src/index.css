@@ -490,3 +490,22 @@ button { font-family: inherit; }
 :root.high-contrast .settings-card,
 :root.high-contrast .calendar-grid,
 :root.high-contrast .stat-card { border-width: 2px; }
+
+/* ── Dashboard task links (keyboard-focusable) ────────────────────── */
+
+.section-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.view-all-link { font-weight: 600; font-size: 0.9rem; }
+
+.task-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+.task-card-link:hover { border-color: var(--primary); }
+.task-card-link .task-info { display: flex; flex-direction: column; min-width: 0; }
+.task-card-link .task-title, .task-card-link .task-meta { display: block; }

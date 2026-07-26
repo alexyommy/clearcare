@@ -10,7 +10,7 @@ test.describe('Navigation', () => {
 
   test('nav links move between all four pages', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('link', { name: /tasks/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /tasks/i }).click();
     await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
     await page.getByRole('link', { name: /calendar/i }).click();
     await expect(page.getByRole('grid')).toBeVisible();
@@ -27,7 +27,7 @@ test.describe('Navigation', () => {
     await expect(toggle).toBeVisible();
     await toggle.click();
     await expect(page.getByRole('button', { name: /close navigation menu/i })).toHaveAttribute('aria-expanded', 'true');
-    await page.getByRole('link', { name: /tasks/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /tasks/i }).click();
     await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
   });
 });
@@ -83,7 +83,20 @@ test.describe('Keyboard accessibility', () => {
     await page.keyboard.press('Tab'); // brand
     await page.keyboard.press('Tab'); // Dashboard link
     await page.keyboard.press('Tab'); // Tasks link
-    await expect(page.getByRole('link', { name: /tasks/i })).toBeFocused();
+    await expect(page.getByRole('navigation').getByRole('link', { name: /tasks/i })).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
+  });
+
+  test('tab reaches dashboard content beyond the nav', async ({ page }) => {
+    await page.goto('/');
+    // brand + 4 nav links = 5 tabs; 6th lands in main content (View all link)
+    for (let i = 0; i < 6; i++) await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: /view all tasks/i })).toBeFocused();
+    // Next tab reaches the first task card link
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: /morning medication round/i })).toBeFocused();
+    // Enter opens the Tasks page
     await page.keyboard.press('Enter');
     await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
   });

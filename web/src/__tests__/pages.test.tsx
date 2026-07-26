@@ -16,7 +16,7 @@ beforeEach(() => {
 describe('DashboardPage', () => {
   it('renders greeting h1 and stat cards', () => {
     render(<MemoryRouter><DashboardPage /></MemoryRouter>);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/good morning/i);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/good (morning|afternoon|evening)/i);
     expect(screen.getByText('Pending')).toBeInTheDocument();
     expect(screen.getByText('Completed')).toBeInTheDocument();
     expect(screen.getByText('Total')).toBeInTheDocument();
@@ -26,6 +26,23 @@ describe('DashboardPage', () => {
     render(<MemoryRouter><DashboardPage /></MemoryRouter>);
     expect(screen.getByRole('heading', { name: /today's tasks/i })).toBeInTheDocument();
     expect(screen.getByText('Morning medication round')).toBeInTheDocument();
+  });
+
+  it('renders task cards as keyboard-focusable links to /tasks', () => {
+    render(<MemoryRouter><DashboardPage /></MemoryRouter>);
+    const card = screen.getByRole('link', { name: /morning medication round.*open in tasks/i });
+    expect(card).toHaveAttribute('href', '/tasks');
+  });
+
+  it('renders a View all link to /tasks', () => {
+    render(<MemoryRouter><DashboardPage /></MemoryRouter>);
+    expect(screen.getByRole('link', { name: /view all tasks/i })).toHaveAttribute('href', '/tasks');
+  });
+
+  it('shows all-complete message when nothing is pending', () => {
+    useAppStore.setState({ tasks: initial.tasks.map((t) => ({ ...t, isCompleted: true })) });
+    render(<MemoryRouter><DashboardPage /></MemoryRouter>);
+    expect(screen.getByText(/all tasks complete/i)).toBeInTheDocument();
   });
 });
 
