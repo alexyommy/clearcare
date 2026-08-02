@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAppStore } from '../store/store';
-import { formatTime, getCategoryColor, getCategoryLabel, getGreeting } from '../utils/helpers';
+import { formatTime, getCategoryColor, getCategoryTextColor, getCategoryLabel, getGreeting } from '../utils/helpers';
 
 export default function DashboardPage() {
   const tasks = useAppStore((s) => s.tasks);
@@ -45,11 +45,7 @@ export default function DashboardPage() {
           <ul className="task-list">
             {preview.map((task) => (
               <li key={task.id}>
-                <Link
-                  to="/tasks"
-                  className="task-card task-card-link"
-                  aria-label={`${task.title}, ${formatTime(task.time)}, ${task.room} — open in Tasks`}
-                >
+                <Link to="/tasks" className="task-card task-card-link">
                   <span className="task-dot" style={{ backgroundColor: getCategoryColor(task.category) }} aria-hidden="true" />
                   <span className="task-info">
                     <span className="task-title">{task.title}</span>
@@ -57,10 +53,11 @@ export default function DashboardPage() {
                   </span>
                   <span
                     className="badge"
-                    style={{ backgroundColor: getCategoryColor(task.category) + '20', color: getCategoryColor(task.category) }}
+                    style={{ backgroundColor: getCategoryColor(task.category) + '20', color: getCategoryTextColor(task.category) }}
                   >
                     {getCategoryLabel(task.category)}
                   </span>
+                  <span className="visually-hidden"> — open in Tasks</span>
                 </Link>
               </li>
             ))}

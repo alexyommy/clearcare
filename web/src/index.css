@@ -8,7 +8,7 @@
   --bg: #F8FAFB;
   --surface: #FFFFFF;
   --text: #212121;
-  --text-muted: #757575;
+  --text-muted: #6B6B6B;
   --border: #E0E0E0;
   --font-base: 16px;
 }
@@ -280,7 +280,8 @@ button { font-family: inherit; }
   color: var(--text);
 }
 
-.task-card.completed .task-title { text-decoration: line-through; opacity: 0.6; }
+/* Completed titles: dimmed via a fixed AA-compliant gray (>=4.5:1), not opacity */
+.task-card.completed .task-title { text-decoration: line-through; color: #5F5F5F; }
 
 .task-check {
   width: 28px; height: 28px;

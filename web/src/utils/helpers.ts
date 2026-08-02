@@ -29,6 +29,22 @@ export function getCategoryColor(c: TaskCategory): string {
   return CATEGORY_COLORS[c] ?? CATEGORY_COLORS.other;
 }
 
+// Darker variants for badge TEXT — each meets WCAG AA (>=4.5:1) on the
+// light category tint used as the badge background (WCAG 1.4.3).
+const CATEGORY_TEXT_COLORS: Record<TaskCategory, string> = {
+  medication: '#B0271B',
+  appointment: '#8A5A06',
+  hygiene: '#0C6E59',
+  nutrition: '#1A7A41',
+  therapy: '#1C6699',
+  monitoring: '#7D3C98',
+  other: '#5F5F5F',
+};
+
+export function getCategoryTextColor(c: TaskCategory): string {
+  return CATEGORY_TEXT_COLORS[c] ?? CATEGORY_TEXT_COLORS.other;
+}
+
 export function getCategoryLabel(c: TaskCategory): string {
   return c.charAt(0).toUpperCase() + c.slice(1);
 }

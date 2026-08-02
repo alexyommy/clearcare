@@ -1,5 +1,5 @@
 import { useAppStore } from '../store/store';
-import { filterTasks, formatTime, getCategoryColor, getCategoryLabel, getPriorityColor, getPriorityLabel } from '../utils/helpers';
+import { filterTasks, formatTime, getCategoryColor, getCategoryTextColor, getCategoryLabel, getPriorityColor, getPriorityLabel } from '../utils/helpers';
 import NewTaskModal from '../components/NewTaskModal';
 import type { CareTask } from '../store/store';
 
@@ -91,7 +91,7 @@ function TaskRow({ task }: { task: CareTask }) {
       </div>
       <span
         className="badge"
-        style={{ backgroundColor: getCategoryColor(task.category) + '20', color: getCategoryColor(task.category) }}
+        style={{ backgroundColor: getCategoryColor(task.category) + '20', color: getCategoryTextColor(task.category) }}
       >
         {getCategoryLabel(task.category)}
       </span>

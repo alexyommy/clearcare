@@ -1,5 +1,5 @@
 import { useAppStore } from '../store/store';
-import { formatTime, getCategoryColor, getCategoryLabel } from '../utils/helpers';
+import { formatTime, getCategoryColor, getCategoryTextColor, getCategoryLabel } from '../utils/helpers';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -70,7 +70,7 @@ export default function CalendarPage() {
                   <div className="task-title">{task.title}</div>
                   <div className="task-meta">{formatTime(task.time)} · {task.room}</div>
                 </div>
-                <span className="badge" style={{ backgroundColor: getCategoryColor(task.category) + '20', color: getCategoryColor(task.category) }}>
+                <span className="badge" style={{ backgroundColor: getCategoryColor(task.category) + '20', color: getCategoryTextColor(task.category) }}>
                   {getCategoryLabel(task.category)}
                 </span>
               </li>
